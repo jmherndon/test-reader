@@ -445,7 +445,7 @@ function startRecognition() {
     else if (t.includes('review') && current < 0)                              { commandFired = true; openReview(); }
   };
   recognition.onerror = (e) => {
-    if (e.error === 'no-speech') return; // ignore silence timeouts
+    if (e.error === 'no-speech' || e.error === 'aborted') return;
     document.getElementById('voice-status').textContent = 'Mic error: ' + e.error;
     micActive = false;
   };
