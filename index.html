@@ -338,7 +338,8 @@ function markerForSpeech(m) {
   return m
     .replace(/–/g, ', ')
     .replace(/\s*\/\s*/g, ', ')
-    .replace(/\s*&\s*/g, ' and ');
+    .replace(/\s*&\s*/g, ' and ')
+    .toLowerCase();
 }
 
 function updateCounter() {
