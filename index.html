@@ -62,6 +62,7 @@
   .move-number { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-light); letter-spacing: 0.08em; }
   .move-instruction { font-size: 1.35rem; font-weight: 600; line-height: 1.35; color: var(--text); }
   .move-directive { font-size: 0.9rem; color: var(--text-mid); font-style: italic; line-height: 1.5; border-top: 0.5px solid #E8E0D0; padding-top: 0.6rem; }
+  .replay-btn { align-self: flex-end; margin-top: 0.25rem; background: none; border: 0.5px solid rgba(200,151,42,0.3); border-radius: 8px; color: var(--gold); font-size: 1.1rem; padding: 4px 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .next-preview { background: rgba(200,151,42,0.08); border: 0.5px solid rgba(200,151,42,0.2); border-radius: 10px; padding: 0.7rem 1rem; display: none; flex-direction: column; gap: 3px; flex-shrink: 0; }
   .next-preview.active { display: flex; }
   .next-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
@@ -184,6 +185,7 @@
     </div>
     <div class="move-instruction" id="move-instruction"></div>
     <div class="move-directive" id="move-directive"></div>
+    <button class="replay-btn" onclick="replaySpeak()" title="Replay">🔊</button>
   </div>
 
   <div class="next-preview" id="next-preview">
@@ -208,6 +210,18 @@
 </div>
 
 <script>
+// iOS: unlock speech synthesis on first user touch
+document.addEventListener('touchstart', function unlock() {
+  const u = new SpeechSynthesisUtterance('');
+  window.speechSynthesis.speak(u);
+  document.removeEventListener('touchstart', unlock);
+}, { once: true });
+
+// iOS: speech synthesis pauses when screen dims — keep it alive
+setInterval(() => {
+  if (window.speechSynthesis.paused) window.speechSynthesis.resume();
+}, 4000);
+
 const MOVEMENTS = [
   { marker:"A / X",         text:"Enter working trot. Halt, salute. Proceed working trot.", directive:"Regularity and quality of trot; willing calm transitions; straightness; attentiveness; immobility (min. 3 sec)." },
   { marker:"C / E",         text:"Track left. Circle left 20m.", directive:"Regularity and quality of trot; shape and size of circle; bend; balance." },
@@ -242,6 +256,8 @@ MOVEMENTS.forEach((m, i) => {
 let current = -1;
 let recognition = null;
 let micActive = false;
+let lastSpoken = '';
+let commandFired = false;
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
@@ -258,11 +274,19 @@ function closeReview() {
 
 function speak(text) {
   if (!window.speechSynthesis) return;
+  lastSpoken = text;
   window.speechSynthesis.cancel();
-  const u = new SpeechSynthesisUtterance(text);
-  u.rate = 0.88;
-  u.pitch = 1.0;
-  window.speechSynthesis.speak(u);
+  // Small delay so cancel() fully clears before new utterance (iOS quirk)
+  setTimeout(() => {
+    const u = new SpeechSynthesisUtterance(text);
+    u.rate = 0.88;
+    u.pitch = 1.0;
+    window.speechSynthesis.speak(u);
+  }, 120);
+}
+
+function replaySpeak() {
+  if (lastSpoken) speak(lastSpoken);
 }
 
 function updateCounter() {
@@ -351,7 +375,7 @@ function startRecognition() {
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   recognition = new SR();
   recognition.continuous = true;
-  recognition.interimResults = false;
+  recognition.interimResults = true;
   recognition.lang = 'en-US';
   recognition.onstart = () => {
     micActive = true;
@@ -359,17 +383,22 @@ function startRecognition() {
     document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Start or Next';
   };
   recognition.onresult = (e) => {
-    const t = e.results[e.results.length-1][0].transcript.trim().toLowerCase();
-    if (t.includes('start') && current < 0) startTest();
-    else if ((t.includes('next') || t.includes('go')) && current >= 0 && current < MOVEMENTS.length) nextMove();
-    else if (t.includes('restart')) restartTest();
-    else if (t.includes('review') && current < 0) openReview();
+    const result = e.results[e.results.length - 1];
+    const t = result[0].transcript.trim().toLowerCase();
+    // Reset the dedup flag when a final result arrives
+    if (result.isFinal) { commandFired = false; return; }
+    if (commandFired) return;
+    if (t.includes('start') && current < 0)                                    { commandFired = true; startTest(); }
+    else if ((t.includes('next') || t.includes('go')) && current >= 0 && current < MOVEMENTS.length) { commandFired = true; nextMove(); }
+    else if (t.includes('restart'))                                             { commandFired = true; restartTest(); }
+    else if (t.includes('review') && current < 0)                              { commandFired = true; openReview(); }
   };
   recognition.onerror = (e) => {
+    if (e.error === 'no-speech') return; // ignore silence timeouts
     document.getElementById('voice-status').textContent = 'Mic error: ' + e.error;
     micActive = false;
   };
-  recognition.onend = () => { if (micActive) recognition.start(); };
+  recognition.onend = () => { if (micActive) { commandFired = false; recognition.start(); } };
   recognition.start();
 }
 </script>
