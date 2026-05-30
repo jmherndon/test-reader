@@ -289,6 +289,13 @@ function replaySpeak() {
   if (lastSpoken) speak(lastSpoken);
 }
 
+function markerForSpeech(m) {
+  return m
+    .replace(/–/g, ', ')
+    .replace(/\s*\/\s*/g, ', ')
+    .replace(/\s*&\s*/g, ' and ');
+}
+
 function updateCounter() {
   document.getElementById('counter').textContent = Math.max(current+1,0) + ' / ' + MOVEMENTS.length;
 }
@@ -311,7 +318,7 @@ function showMovement(idx) {
     np.classList.remove('active');
   }
   updateCounter();
-  speak('At ' + m.marker + '. ' + m.text);
+  speak('At ' + markerForSpeech(m.marker) + '. ' + m.text);
 }
 
 function startTest() {
