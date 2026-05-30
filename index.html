@@ -291,11 +291,7 @@ function _doSpeak(text) {
   const u = new SpeechSynthesisUtterance(text);
   u.rate = 0.88;
   u.pitch = 1.0;
-  u.onend = u.onerror = () => {
-    synthActive = false;
-    // Resume recognition after speech finishes
-    if (micActive) setTimeout(() => { try { recognition.start(); } catch(e){} }, 250);
-  };
+  u.onend = u.onerror = () => { synthActive = false; commandFired = false; };
   window.speechSynthesis.speak(u);
 }
 
@@ -307,13 +303,13 @@ function speakMovement(marker, instruction) {
   if (!window.speechSynthesis) return;
   lastSpoken = marker + '. ' + instruction;
   synthActive = true;
-  if (recognition && micActive) recognition.stop();
   if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
     window.speechSynthesis.cancel();
-    setTimeout(() => { _queueMovement(marker, instruction); }, 150);
-  } else {
-    _queueMovement(marker, instruction);
   }
+  // Delay gives iOS a moment to hand off audio after the recognition callback
+  setTimeout(() => _queueMovement(marker, instruction), 350);
+  // Safety: reset synthActive if iOS blocks speech and onend never fires
+  setTimeout(() => { synthActive = false; commandFired = false; }, 10000);
 }
 
 function _queueMovement(marker, instruction) {
@@ -327,7 +323,6 @@ function _queueMovement(marker, instruction) {
   u2.onend = u2.onerror = () => {
     synthActive = false;
     commandFired = false;
-    if (micActive) setTimeout(() => startRecognition(), 250);
   };
 
   window.speechSynthesis.speak(u1);
@@ -377,7 +372,6 @@ function startTest() {
 }
 
 function nextMove() {
-  window.speechSynthesis && window.speechSynthesis.cancel();
   current++;
   if (current < MOVEMENTS.length) {
     showMovement(current);
@@ -451,7 +445,7 @@ function startRecognition() {
     document.getElementById('voice-status').textContent = 'Mic error: ' + e.error;
     micActive = false;
   };
-  recognition.onend = () => { if (micActive && !synthActive) { commandFired = false; recognition.start(); } };
+  recognition.onend = () => { if (micActive) { commandFired = false; recognition.start(); } };
   recognition.start();
 }
 </script>
