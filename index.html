@@ -258,6 +258,7 @@ let recognition = null;
 let micActive = false;
 let lastSpoken = '';
 let commandFired = false;
+let synthActive = false;
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
@@ -275,18 +276,61 @@ function closeReview() {
 function speak(text) {
   if (!window.speechSynthesis) return;
   lastSpoken = text;
-  window.speechSynthesis.cancel();
-  // Small delay so cancel() fully clears before new utterance (iOS quirk)
-  setTimeout(() => {
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.88;
-    u.pitch = 1.0;
-    window.speechSynthesis.speak(u);
-  }, 120);
+  synthActive = true;
+  // Stop recognition while speaking — iOS cannot run both simultaneously
+  if (recognition && micActive) recognition.abort();
+  if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+    window.speechSynthesis.cancel();
+    setTimeout(() => { _doSpeak(text); }, 150);
+  } else {
+    _doSpeak(text);
+  }
+}
+
+function _doSpeak(text) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = 0.88;
+  u.pitch = 1.0;
+  u.onend = u.onerror = () => {
+    synthActive = false;
+    // Resume recognition after speech finishes
+    if (micActive) setTimeout(() => { try { recognition.start(); } catch(e){} }, 250);
+  };
+  window.speechSynthesis.speak(u);
 }
 
 function replaySpeak() {
   if (lastSpoken) speak(lastSpoken);
+}
+
+function speakMovement(marker, instruction) {
+  if (!window.speechSynthesis) return;
+  lastSpoken = marker + '. ' + instruction;
+  synthActive = true;
+  if (recognition && micActive) recognition.abort();
+  if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
+    window.speechSynthesis.cancel();
+    setTimeout(() => { _queueMovement(marker, instruction); }, 150);
+  } else {
+    _queueMovement(marker, instruction);
+  }
+}
+
+function _queueMovement(marker, instruction) {
+  const u1 = new SpeechSynthesisUtterance('At ' + marker);
+  u1.rate = 0.88;
+  u1.pitch = 1.0;
+
+  const u2 = new SpeechSynthesisUtterance(instruction);
+  u2.rate = 0.88;
+  u2.pitch = 1.0;
+  u2.onend = u2.onerror = () => {
+    synthActive = false;
+    if (micActive) setTimeout(() => { try { recognition.start(); } catch(e){} }, 250);
+  };
+
+  window.speechSynthesis.speak(u1);
+  window.speechSynthesis.speak(u2);
 }
 
 function markerForSpeech(m) {
@@ -318,7 +362,7 @@ function showMovement(idx) {
     np.classList.remove('active');
   }
   updateCounter();
-  speak('At ' + markerForSpeech(m.marker) + '. ' + m.text);
+  speakMovement(markerForSpeech(m.marker), m.text);
 }
 
 function startTest() {
@@ -405,7 +449,7 @@ function startRecognition() {
     document.getElementById('voice-status').textContent = 'Mic error: ' + e.error;
     micActive = false;
   };
-  recognition.onend = () => { if (micActive) { commandFired = false; recognition.start(); } };
+  recognition.onend = () => { if (micActive && !synthActive) { commandFired = false; recognition.start(); } };
   recognition.start();
 }
 </script>
