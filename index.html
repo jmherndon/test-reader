@@ -307,7 +307,7 @@ function speakMovement(marker, instruction) {
   if (!window.speechSynthesis) return;
   lastSpoken = marker + '. ' + instruction;
   synthActive = true;
-  if (recognition && micActive) recognition.abort();
+  if (recognition && micActive) recognition.stop();
   if (window.speechSynthesis.speaking || window.speechSynthesis.pending) {
     window.speechSynthesis.cancel();
     setTimeout(() => { _queueMovement(marker, instruction); }, 150);
@@ -326,7 +326,8 @@ function _queueMovement(marker, instruction) {
   u2.pitch = 1.0;
   u2.onend = u2.onerror = () => {
     synthActive = false;
-    if (micActive) setTimeout(() => { try { recognition.start(); } catch(e){} }, 250);
+    commandFired = false;
+    if (micActive) setTimeout(() => startRecognition(), 250);
   };
 
   window.speechSynthesis.speak(u1);
@@ -445,7 +446,7 @@ function startRecognition() {
     else if (t.includes('review') && current < 0)                              { commandFired = true; openReview(); }
   };
   recognition.onerror = (e) => {
-    if (e.error === 'no-speech' || e.error === 'aborted') return;
+    if (e.error === 'no-speech') return;
     document.getElementById('voice-status').textContent = 'Mic error: ' + e.error;
     micActive = false;
   };
