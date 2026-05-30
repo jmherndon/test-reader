@@ -80,16 +80,94 @@
   .voice-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); margin-right: 5px; vertical-align: middle; animation: pulse 1.2s ease-in-out infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
   .hidden { display: none !important; }
+
+  /* Review screen */
+  .review-screen {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--arena);
+    flex-direction: column;
+    padding: env(safe-area-inset-top, 0) env(safe-area-inset-right, 0) env(safe-area-inset-bottom, 0) env(safe-area-inset-left, 0);
+    z-index: 100;
+  }
+  .review-screen.active { display: flex; }
+  .review-header {
+    padding: 1.25rem 1.5rem 0.75rem;
+    border-bottom: 0.5px solid rgba(200,151,42,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .review-title { font-size: 1.1rem; font-weight: 600; color: var(--sand); }
+  .review-close { font-family: 'DM Mono', monospace; font-size: 0.8rem; color: var(--gold); background: none; border: none; cursor: pointer; letter-spacing: 0.06em; -webkit-tap-highlight-color: transparent; }
+  .review-scroll { flex: 1; overflow-y: auto; padding: 1rem 1.25rem; -webkit-overflow-scrolling: touch; }
+  .review-purpose {
+    font-size: 0.88rem;
+    color: var(--text-light);
+    font-style: italic;
+    line-height: 1.55;
+    padding: 0.75rem 1rem;
+    border: 0.5px solid rgba(200,151,42,0.15);
+    border-radius: 10px;
+    margin-bottom: 1rem;
+  }
+  .review-row {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 0.5rem 0.75rem;
+    padding: 0.75rem 0;
+    border-bottom: 0.5px solid rgba(200,151,42,0.12);
+    align-items: start;
+  }
+  .review-row:last-child { border-bottom: none; }
+  .review-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--gold);
+    background: rgba(200,151,42,0.12);
+    border-radius: 50%;
+    width: 1.6rem;
+    height: 1.6rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .review-content { display: flex; flex-direction: column; gap: 3px; }
+  .review-marker { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--gold); letter-spacing: 0.06em; }
+  .review-instruction { font-size: 1rem; font-weight: 600; color: var(--sand); line-height: 1.35; }
+  .review-directive { font-size: 0.82rem; color: var(--text-light); font-style: italic; line-height: 1.4; }
+  .review-footer { padding: 0.75rem 1.25rem 1.25rem; flex-shrink: 0; border-top: 0.5px solid rgba(200,151,42,0.15); }
 </style>
 </head>
 <body>
 
+<!-- Review screen (overlay) -->
+<div class="review-screen" id="review-screen">
+  <div class="review-header">
+    <div class="review-title">Training Level · Test 1</div>
+    <button class="review-close" onclick="closeReview()">Close ✕</button>
+  </div>
+  <div class="review-scroll">
+    <div class="review-purpose">
+      Confirm correct basics: suppleness laterally and longitudinally, moving freely forward in a clear rhythm with steady tempo, readily accepting contact. Correct geometry and lines of travel.
+    </div>
+    <div id="review-list"></div>
+  </div>
+  <div class="review-footer">
+    <button class="btn-primary" onclick="closeReview(); startTest()">Start Test</button>
+  </div>
+</div>
+
 <div class="header">
   <div class="header-left">
     <div class="test-title">Training Level · Test 1</div>
-    <div class="test-subtitle">USEF 2019</div>
+    <div class="test-subtitle">USEF 2023</div>
   </div>
-  <div class="counter" id="counter">0 / 14</div>
+  <div class="counter" id="counter">0 / 13</div>
 </div>
 
 <div class="main">
@@ -102,7 +180,7 @@
   <div class="movement-card" id="movement-card">
     <div class="move-header">
       <div class="move-badge" id="move-marker">A</div>
-      <div class="move-number" id="move-number">MOVEMENT 1 OF 14</div>
+      <div class="move-number" id="move-number">MOVEMENT 1 OF 13</div>
     </div>
     <div class="move-instruction" id="move-instruction"></div>
     <div class="move-directive" id="move-directive"></div>
@@ -123,6 +201,7 @@
 <div class="controls">
   <div class="voice-status" id="voice-status"></div>
   <button class="btn-primary" id="start-btn" onclick="startTest()">Start Test</button>
+  <button class="btn-secondary" id="review-btn" onclick="openReview()">Review Test</button>
   <button class="btn-primary hidden" id="next-btn" onclick="nextMove()">Next →</button>
   <button class="btn-secondary hidden" id="restart-btn" onclick="restartTest()">Restart</button>
   <button class="btn-secondary" id="mic-btn" onclick="toggleMic()">Enable Voice Commands</button>
@@ -130,21 +209,35 @@
 
 <script>
 const MOVEMENTS = [
-  { marker:"A", text:"Enter working trot. Proceed down center line without halting.", directive:"Straightness on center line, balance in turn." },
-  { marker:"X", text:"Halt. Salute. Proceed working trot.", directive:"Immobility, square halt, smooth transition to trot." },
-  { marker:"C", text:"Track right.", directive:"Bend, balance through corner." },
-  { marker:"B–E", text:"Circle right 20 meters.", directive:"Correct bend, shape, and rhythm throughout circle." },
-  { marker:"Between E & K", text:"Working canter right lead.", directive:"Willing, balanced transition into canter." },
-  { marker:"A", text:"Circle right 20 meters.", directive:"Balance, correct bend, horse maintains canter tempo." },
-  { marker:"Between F & B", text:"Working trot.", directive:"Smooth downward transition, maintaining rhythm." },
-  { marker:"B–E", text:"Circle left 20 meters.", directive:"Correct bend, shape, rhythm throughout circle." },
-  { marker:"Between E & H", text:"Working canter left lead.", directive:"Willing, balanced transition into canter." },
-  { marker:"C", text:"Circle left 20 meters.", directive:"Balance, correct bend, horse maintains canter tempo." },
-  { marker:"Between M & B", text:"Working trot.", directive:"Smooth downward transition, maintaining rhythm." },
-  { marker:"K–X–M", text:"Change rein. Free walk on a long rein.", directive:"Long and low, clear overstep, relaxation." },
-  { marker:"M", text:"Medium walk.", directive:"Prompt transition, clear marching four-beat walk." },
-  { marker:"Between G & X", text:"Halt. Salute. Leave arena at A in free walk.", directive:"Square, immobile halt. Relaxed free walk exit." }
+  { marker:"A / X",         text:"Enter working trot. Halt, salute. Proceed working trot.", directive:"Regularity and quality of trot; willing calm transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+  { marker:"C / E",         text:"Track left. Circle left 20m.", directive:"Regularity and quality of trot; shape and size of circle; bend; balance." },
+  { marker:"A",             text:"Circle left 20m, developing left lead canter in the first quarter of circle.", directive:"Willing calm transition; regularity and quality of gaits; shape and size of circle; bend; balance." },
+  { marker:"A–F–B",         text:"Working canter.", directive:"Regularity and quality of canter; bend and balance in corner; straightness." },
+  { marker:"Between B & M", text:"Working trot.", directive:"Willing calm transition; regularity and quality of gaits; straightness; bend and balance in corner." },
+  { marker:"Between C & H", text:"Medium walk.", directive:"Willing calm transition; regularity, quality, bend and balance in corner." },
+  { marker:"E–F",           text:"Change rein, free walk.", directive:"Regularity and quality of walks; reach, overtrack, and ground cover of free walk allowing complete freedom to stretch the neck forward and downward; straightness; willing calm transitions." },
+  { marker:"F",             text:"Medium walk.", directive:"Willing calm transition; regularity and quality of walk." },
+  { marker:"A",             text:"Working trot.", directive:"Willing calm transition; regularity and quality of trot; bend and balance in corner; straightness." },
+  { marker:"E",             text:"Circle right 20m.", directive:"Regularity and quality of trot; shape and size of circle; bend; balance." },
+  { marker:"C",             text:"Circle right 20m, developing right lead canter in the first quarter of circle.", directive:"Willing calm transition; regularity and quality of gaits; shape and size of circle; bend; balance." },
+  { marker:"C–M–B",         text:"Working canter.", directive:"Regularity and quality of canter; bend and balance in corner; straightness." },
+  { marker:"Between B & F / A / X", text:"Working trot. Down centerline. Halt, salute.", directive:"Willing calm transition; bend and balance in turn; regularity and quality of trot; straightness; attentiveness; immobility (min. 3 sec). Leave arena at A in free walk." }
 ];
+
+// Build review list
+const reviewList = document.getElementById('review-list');
+MOVEMENTS.forEach((m, i) => {
+  const row = document.createElement('div');
+  row.className = 'review-row';
+  row.innerHTML =
+    '<div class="review-num">' + (i+1) + '</div>' +
+    '<div class="review-content">' +
+      '<div class="review-marker">' + m.marker + '</div>' +
+      '<div class="review-instruction">' + m.text + '</div>' +
+      '<div class="review-directive">' + m.directive + '</div>' +
+    '</div>';
+  reviewList.appendChild(row);
+});
 
 let current = -1;
 let recognition = null;
@@ -152,6 +245,15 @@ let micActive = false;
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('sw.js');
+}
+
+function openReview() {
+  document.getElementById('review-screen').classList.add('active');
+  document.getElementById('review-screen').querySelector('.review-scroll').scrollTop = 0;
+}
+
+function closeReview() {
+  document.getElementById('review-screen').classList.remove('active');
 }
 
 function speak(text) {
@@ -191,6 +293,7 @@ function showMovement(idx) {
 function startTest() {
   current = 0;
   document.getElementById('start-btn').classList.add('hidden');
+  document.getElementById('review-btn').classList.add('hidden');
   document.getElementById('next-btn').classList.remove('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
   showMovement(current);
@@ -223,6 +326,7 @@ function restartTest() {
   document.getElementById('next-preview').classList.remove('active');
   document.getElementById('idle-state').style.display = 'flex';
   document.getElementById('start-btn').classList.remove('hidden');
+  document.getElementById('review-btn').classList.remove('hidden');
   document.getElementById('next-btn').classList.add('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
   document.getElementById('counter').textContent = '0 / ' + MOVEMENTS.length;
@@ -259,6 +363,7 @@ function startRecognition() {
     if (t.includes('start') && current < 0) startTest();
     else if ((t.includes('next') || t.includes('go')) && current >= 0 && current < MOVEMENTS.length) nextMove();
     else if (t.includes('restart')) restartTest();
+    else if (t.includes('review') && current < 0) openReview();
   };
   recognition.onerror = (e) => {
     document.getElementById('voice-status').textContent = 'Mic error: ' + e.error;
