@@ -317,7 +317,7 @@ function speakMovement(marker, instruction) {
 }
 
 function _queueMovement(marker, instruction) {
-  const u1 = new SpeechSynthesisUtterance('At ' + marker);
+  const u1 = new SpeechSynthesisUtterance(marker);
   u1.rate = 0.88;
   u1.pitch = 1.0;
 
