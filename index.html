@@ -431,7 +431,7 @@ function startRecognition() {
   recognition.onstart = () => {
     micActive = true;
     document.getElementById('mic-btn').textContent = 'Disable Voice';
-    document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Start or Next';
+    document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Start, Next, or Restart';
   };
   recognition.onresult = (e) => {
     const result = e.results[e.results.length - 1];
