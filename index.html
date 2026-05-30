@@ -174,8 +174,8 @@
 <div class="main">
   <div class="idle-state" id="idle-state">
     <div class="arena-mark">✦</div>
-    <div class="idle-hint">Ready when you are.</div>
-    <div class="idle-sub">Say "Start" or tap below</div>
+    <div class="idle-hint">Tap Start Test to begin.</div>
+    <div class="idle-sub">Then say Next or Restart</div>
   </div>
 
   <div class="movement-card" id="movement-card">
@@ -206,7 +206,7 @@
   <button class="btn-secondary" id="review-btn" onclick="openReview()">Review Test</button>
   <button class="btn-primary hidden" id="next-btn" onclick="nextMove()">Next →</button>
   <button class="btn-secondary hidden" id="restart-btn" onclick="restartTest()">Restart</button>
-  <button class="btn-secondary" id="mic-btn" onclick="toggleMic()">Enable Voice Commands</button>
+  <button class="btn-secondary hidden" id="mic-btn" onclick="toggleMic()">Disable Voice</button>
 </div>
 
 <script>
@@ -378,6 +378,9 @@ function startTest() {
   document.getElementById('review-btn').classList.add('hidden');
   document.getElementById('next-btn').classList.remove('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
+  document.getElementById('mic-btn').classList.remove('hidden');
+  // Button tap is the iOS audio unlock — start voice here so Next/Restart work hands-free
+  if (!micActive) startRecognition();
   showMovement(current);
 }
 
@@ -402,6 +405,9 @@ function endTest() {
 
 function restartTest() {
   current = -1;
+  if (micActive) { recognition && recognition.stop(); micActive = false; }
+  synthActive = false;
+  commandFired = false;
   document.getElementById('done-state').classList.remove('active');
   document.getElementById('movement-card').classList.remove('active');
   document.getElementById('next-preview').classList.remove('active');
@@ -410,6 +416,8 @@ function restartTest() {
   document.getElementById('review-btn').classList.remove('hidden');
   document.getElementById('next-btn').classList.add('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
+  document.getElementById('mic-btn').classList.add('hidden');
+  document.getElementById('voice-status').textContent = '';
   document.getElementById('counter').textContent = '0 / ' + MOVEMENTS.length;
 }
 
@@ -421,7 +429,7 @@ function toggleMic() {
   if (micActive) {
     recognition && recognition.stop();
     micActive = false;
-    document.getElementById('mic-btn').textContent = 'Enable Voice Commands';
+    document.getElementById('mic-btn').textContent = 'Enable Voice';
     document.getElementById('voice-status').textContent = '';
   } else {
     startRecognition();
@@ -437,7 +445,7 @@ function startRecognition() {
   recognition.onstart = () => {
     micActive = true;
     document.getElementById('mic-btn').textContent = 'Disable Voice';
-    document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Start, Next, or Restart';
+    document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Next or Restart';
   };
   recognition.onresult = (e) => {
     const result = e.results[e.results.length - 1];
@@ -445,10 +453,8 @@ function startRecognition() {
     // Reset the dedup flag when a final result arrives
     if (result.isFinal) { commandFired = false; return; }
     if (commandFired) return;
-    if (t.includes('start') && current < 0)                                    { commandFired = true; startTest(); }
-    else if ((t.includes('next') || t.includes('go')) && current >= 0 && current < MOVEMENTS.length) { commandFired = true; nextMove(); }
+    if ((t.includes('next') || t.includes('go')) && current >= 0 && current < MOVEMENTS.length) { commandFired = true; nextMove(); }
     else if (t.includes('restart'))                                             { commandFired = true; restartTest(); }
-    else if (t.includes('review') && current < 0)                              { commandFired = true; openReview(); }
   };
   recognition.onerror = (e) => {
     if (e.error === 'no-speech' || e.error === 'aborted') return;
