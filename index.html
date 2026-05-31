@@ -198,6 +198,11 @@
   .review-part-text { font-size: 0.95rem; font-weight: 600; color: var(--sand); line-height: 1.35; }
   .review-directive { font-size: 0.82rem; color: var(--text-light); font-style: italic; line-height: 1.4; }
   .review-footer { padding: 0.75rem 1.25rem 1.25rem; flex-shrink: 0; border-top: 0.5px solid rgba(200,151,42,0.15); }
+  /* Voice picker */
+  .voice-picker { margin-top: 0.5rem; }
+  .voice-picker-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--text-light); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 0.4rem; }
+  .voice-select { width: 100%; padding: 0.65rem 0.9rem; background: rgba(200,151,42,0.07); border: 0.5px solid rgba(200,151,42,0.25); border-radius: 10px; color: var(--sand); font-family: 'Crimson Pro', Georgia, serif; font-size: 1rem; appearance: none; -webkit-appearance: none; cursor: pointer; }
+  .voice-select option { background: #2C2416; color: #F5F0E8; }
 </style>
 </head>
 <body>
@@ -210,6 +215,12 @@
     <div class="selector-subtitle">USEF 2023 · Training Level</div>
   </div>
   <div class="selector-list" id="selector-list"></div>
+  <div class="voice-picker">
+    <div class="voice-picker-label">Voice</div>
+    <select class="voice-select" id="voice-select" onchange="selectVoice(this.value)">
+      <option value="">Default</option>
+    </select>
+  </div>
 </div>
 
 <!-- Review screen (overlay) -->
@@ -383,13 +394,36 @@ let preferredVoice = null;
 function initVoice() {
   const voices = window.speechSynthesis.getVoices();
   if (!voices.length) return;
-  preferredVoice =
-    voices.find(v => v.lang.startsWith('en') && /enhanced|premium/i.test(v.name)) ||
-    voices.find(v => v.lang === 'en-US' && !/compact/i.test(v.name)) ||
-    voices.find(v => v.lang.startsWith('en-US')) ||
-    voices.find(v => v.lang.startsWith('en')) ||
-    null;
+  const englishVoices = voices.filter(v => v.lang.startsWith('en'));
+  if (!englishVoices.length) return;
+
+  // Populate picker
+  const sel = document.getElementById('voice-select');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Default</option>';
+  englishVoices.forEach(v => {
+    const opt = document.createElement('option');
+    opt.value = v.name;
+    opt.textContent = v.name + (v.default ? ' ✓' : '');
+    sel.appendChild(opt);
+  });
+  if (current) sel.value = current;
+
+  // Auto-select: prefer any non-compact, non-default English voice; fall back to first
+  if (!preferredVoice) {
+    preferredVoice =
+      englishVoices.find(v => v.lang === 'en-US' && !v.default && !/compact/i.test(v.name)) ||
+      englishVoices.find(v => v.lang.startsWith('en') && !v.default) ||
+      englishVoices[0];
+    if (preferredVoice) sel.value = preferredVoice.name;
+  }
 }
+
+function selectVoice(name) {
+  const voices = window.speechSynthesis.getVoices();
+  preferredVoice = name ? voices.find(v => v.name === name) || null : null;
+}
+
 initVoice();
 window.speechSynthesis.onvoiceschanged = initVoice;
 
