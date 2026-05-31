@@ -215,12 +215,6 @@
     <div class="selector-subtitle">USEF 2023 · Training Level</div>
   </div>
   <div class="selector-list" id="selector-list"></div>
-  <div class="voice-picker">
-    <div class="voice-picker-label">Voice</div>
-    <select class="voice-select" id="voice-select" onchange="selectVoice(this.value)">
-      <option value="">Default</option>
-    </select>
-  </div>
 </div>
 
 <!-- Review screen (overlay) -->
@@ -288,6 +282,12 @@
   <button class="btn-primary  hidden" id="next-btn"       onclick="nextMove()">Next →</button>
   <button class="btn-secondary hidden" id="restart-btn"   onclick="restartTest()">Restart</button>
   <button class="btn-secondary hidden" id="change-test-btn" onclick="showSelector()">Change Test</button>
+  <div class="voice-picker">
+    <div class="voice-picker-label">Voice</div>
+    <select class="voice-select" id="voice-select" onchange="selectVoice(this.value)">
+      <option value="">Default</option>
+    </select>
+  </div>
   <div style="display:flex;gap:0.5rem">
     <button class="btn-secondary" id="mic-btn"    onclick="toggleMic()"    style="flex:1">Enable Microphone</button>
     <button class="btn-secondary" id="silent-btn" onclick="toggleSilent()" style="flex:1">Silent Mode</button>
