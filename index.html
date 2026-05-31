@@ -249,12 +249,6 @@
 </div>
 
 <div class="main">
-  <div class="idle-state" id="idle-state">
-    <div class="arena-mark">✦</div>
-    <div class="idle-hint">Say "Start" to begin.</div>
-    <div class="idle-sub">Or tap Start Test below</div>
-  </div>
-
   <div class="movement-card" id="movement-card">
     <div class="move-header">
       <div class="move-badge" id="move-marker"></div>
@@ -441,7 +435,7 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 const selectorList = document.getElementById('selector-list');
 TESTS.forEach((t, i) => {
   const wrap = document.createElement('div');
-  wrap.style.cssText = 'display:flex;flex-direction:column;gap:4px';
+  wrap.style.cssText = 'position:relative';
 
   const btn = document.createElement('button');
   btn.className = 'test-card';
@@ -449,9 +443,9 @@ TESTS.forEach((t, i) => {
   btn.onclick = () => selectTest(i);
 
   const rev = document.createElement('button');
-  rev.className = 'btn-secondary';
-  rev.textContent = 'Review ' + t.name;
-  rev.onclick = () => { selectedTest = TESTS[i]; buildReview(); openReview(); };
+  rev.style.cssText = 'position:absolute;top:0.65rem;right:0.9rem;font-family:"DM Mono",monospace;font-size:0.65rem;letter-spacing:0.08em;color:var(--gold);background:none;border:none;cursor:pointer;text-transform:uppercase;opacity:0.8;';
+  rev.textContent = 'Review';
+  rev.onclick = (e) => { e.stopPropagation(); selectedTest = TESTS[i]; buildReview(); openReview(); };
 
   wrap.appendChild(btn);
   wrap.appendChild(rev);
