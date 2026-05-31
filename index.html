@@ -46,24 +46,21 @@
     position: fixed;
     inset: 0;
     background: var(--arena);
-    padding: max(env(safe-area-inset-top), 2rem) 1.5rem 0.5rem;
+    padding: max(env(safe-area-inset-top), 0px) 0 0;
     z-index: 200;
   }
   .selector-screen.hidden { display: none; }
-  .selector-hero {
-    flex: 1;
+  .selector-header {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: 0.4rem;
-    text-align: center;
-    padding-bottom: 1rem;
+    justify-content: space-between;
+    padding: max(env(safe-area-inset-top), 1rem) 1.5rem 0.75rem;
+    border-bottom: 0.5px solid rgba(200,151,42,0.25);
+    flex-shrink: 0;
   }
-  .selector-icon { font-size: 2.5rem; color: var(--gold); margin-bottom: 0.25rem; }
-  .selector-title { font-size: 1.5rem; font-weight: 600; color: var(--sand); letter-spacing: 0.01em; }
-  .selector-subtitle { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
-  .selector-list { display: flex; flex-direction: column; gap: 0.75rem; padding-bottom: 0.5rem; }
+  .selector-title { font-size: 1.1rem; font-weight: 600; color: var(--sand); letter-spacing: 0.02em; }
+  .selector-subtitle { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; }
+  .selector-list { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem 1.5rem; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
   .test-card {
     width: 100%;
     padding: 1.1rem 1.4rem;
@@ -214,8 +211,7 @@
 
 <!-- Test selector (shown on launch) -->
 <div class="selector-screen" id="selector-screen">
-  <div class="selector-hero">
-    <div class="selector-icon">✦</div>
+  <div class="selector-header">
     <div class="selector-title">Dressage Test Reader</div>
     <div class="selector-subtitle">USEF 2023 · Training Level</div>
   </div>
