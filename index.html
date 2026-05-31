@@ -221,10 +221,6 @@
       <option value="">Default</option>
     </select>
   </div>
-  <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
-    <button class="btn-secondary" id="mic-btn" onclick="toggleMic()" style="flex:1">Enable Microphone</button>
-    <button class="btn-secondary" id="silent-btn" onclick="toggleSilent()" style="flex:1">Silent Mode</button>
-  </div>
 </div>
 
 <!-- Review screen (overlay) -->
@@ -289,10 +285,13 @@
 
 <div class="controls">
   <div class="voice-status" id="voice-status"></div>
-  <button class="btn-primary  hidden" id="next-btn"    onclick="nextMove()">Next →</button>
-  <button class="btn-secondary hidden" id="restart-btn" onclick="restartTest()">Restart</button>
+  <button class="btn-primary  hidden" id="next-btn"       onclick="nextMove()">Next →</button>
+  <button class="btn-secondary hidden" id="restart-btn"   onclick="restartTest()">Restart</button>
   <button class="btn-secondary hidden" id="change-test-btn" onclick="showSelector()">Change Test</button>
-  <button class="btn-secondary hidden" id="mic-off-btn" onclick="toggleMic()">Disable Microphone</button>
+  <div style="display:flex;gap:0.5rem">
+    <button class="btn-secondary" id="mic-btn"    onclick="toggleMic()"    style="flex:1">Enable Microphone</button>
+    <button class="btn-secondary" id="silent-btn" onclick="toggleSilent()" style="flex:1">Silent Mode</button>
+  </div>
 </div>
 
 <script>
@@ -483,7 +482,6 @@ function showSelector() {
   document.getElementById('next-btn').classList.add('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
   document.getElementById('change-test-btn').classList.add('hidden');
-  document.getElementById('mic-off-btn').classList.add('hidden');
   updateMicUI(micActive);
   updateVoiceStatus();
 }
@@ -688,7 +686,6 @@ function startTest() {
   document.getElementById('next-btn').classList.remove('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
   document.getElementById('change-test-btn').classList.remove('hidden');
-  document.getElementById('mic-off-btn').classList.toggle('hidden', !micActive);
   showMovement(current);
 }
 
@@ -754,8 +751,6 @@ function toggleMic() {
 
 function updateMicUI(active) {
   document.getElementById('mic-btn').textContent = active ? 'Microphone On' : 'Enable Microphone';
-  const offBtn = document.getElementById('mic-off-btn');
-  if (offBtn) offBtn.classList.toggle('hidden', !active);
 }
 
 function startRecognition() {
