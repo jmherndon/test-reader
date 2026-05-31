@@ -251,8 +251,8 @@
 <div class="main">
   <div class="idle-state" id="idle-state">
     <div class="arena-mark">✦</div>
-    <div class="idle-hint">Tap Start Test to begin.</div>
-    <div class="idle-sub">Then say Start, Next, or Restart</div>
+    <div class="idle-hint">Say "Start" to begin.</div>
+    <div class="idle-sub">Or tap Start Test below</div>
   </div>
 
   <div class="movement-card" id="movement-card">
@@ -620,6 +620,7 @@ function resetToIdle() {
   document.getElementById('next-btn').classList.add('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
   if (selectedTest) document.getElementById('counter').textContent = '0 / ' + selectedTest.movements.length;
+  updateVoiceStatus();
 }
 
 function showMovement(idx) {
@@ -663,6 +664,7 @@ function showMovement(idx) {
   }
   document.getElementById('counter').textContent = (idx + 1) + ' / ' + mvs.length;
   updateArena(m.marker);
+  updateVoiceStatus();
   speakMovement(m.marker, m.text, m.parts);
 }
 
@@ -694,13 +696,28 @@ function endTest() {
 }
 
 function restartTest() {
-  if (micActive) { recognition && recognition.stop(); micActive = false; }
   synthActive = false; commandFired = false;
   window.speechSynthesis && window.speechSynthesis.cancel();
   document.getElementById('restart-btn').classList.add('hidden');
-  document.getElementById('voice-status').textContent = '';
-  updateMicUI(micActive);
   resetToIdle();
+}
+
+function selectAndStartTest(idx) {
+  if (idx >= TESTS.length) return;
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  synthActive = false; commandFired = false; current = -1;
+  selectTest(idx);
+  startTest();
+}
+
+function updateVoiceStatus() {
+  if (!micActive) return;
+  const el = document.getElementById('voice-status');
+  if (current < 0) {
+    el.innerHTML = '<span class="voice-dot"></span>Say Test 1, 2, or 3 to begin';
+  } else {
+    el.innerHTML = '<span class="voice-dot"></span>Next · Repeat · Restart · Test 1/2/3';
+  }
 }
 
 // ── Voice ──────��──────────────────────────────────────────────────────────────
@@ -738,17 +755,21 @@ function startRecognition() {
     recognition.onstart = () => {
       micActive = true;
       updateMicUI(true);
-      document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Start, Next, Repeat, or Restart';
+      updateVoiceStatus();
     };
     recognition.onresult = (e) => {
       const result = e.results[e.results.length - 1];
       const t = result[0].transcript.trim().toLowerCase();
       if (result.isFinal) { commandFired = false; return; }
       if (commandFired) return;
-      if (t.includes('restart'))                                                                                       { commandFired = true; restartTest(); }
+      if      (t.match(/\btest (one|1)\b/))                                                                          { commandFired = true; selectAndStartTest(0); }
+      else if (t.match(/\btest (two|to+|2)\b/))                                                                      { commandFired = true; selectAndStartTest(1); }
+      else if (t.match(/\btest (three|3)\b/))                                                                        { commandFired = true; selectAndStartTest(2); }
+      else if (t.includes('go back') || t.includes('home'))                                                          { commandFired = true; showSelector(); }
+      else if (t.includes('restart'))                                                                                 { commandFired = true; restartTest(); }
       else if (t.includes('repeat') && current >= 0)                                                                 { commandFired = true; replaySpeak(); }
-      else if (t.includes('start') && current < 0)                                                                   { commandFired = true; startTest(); }
-      else if ((t.includes('next') || t.includes('go')) && current >= 0 && current < selectedTest.movements.length) { commandFired = true; nextMove(); }
+      else if (t.includes('start') && current < 0 && selectedTest)                                                   { commandFired = true; startTest(); }
+      else if ((t.includes('next') || (t.includes('go') && !t.includes('go back'))) && current >= 0 && current < selectedTest.movements.length) { commandFired = true; nextMove(); }
     };
     recognition.onerror = (e) => {
       if (e.error === 'no-speech' || e.error === 'aborted') return;
