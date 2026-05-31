@@ -378,6 +378,28 @@ let micActive = false;
 let lastSpoken = '';
 let commandFired = false;
 let synthActive = false;
+let preferredVoice = null;
+
+function initVoice() {
+  const voices = window.speechSynthesis.getVoices();
+  if (!voices.length) return;
+  preferredVoice =
+    voices.find(v => v.lang.startsWith('en') && /enhanced|premium/i.test(v.name)) ||
+    voices.find(v => v.lang === 'en-US' && !/compact/i.test(v.name)) ||
+    voices.find(v => v.lang.startsWith('en-US')) ||
+    voices.find(v => v.lang.startsWith('en')) ||
+    null;
+}
+initVoice();
+window.speechSynthesis.onvoiceschanged = initVoice;
+
+function makeUtterance(text, rate) {
+  const u = new SpeechSynthesisUtterance(text);
+  u.rate = rate || 0.88;
+  u.pitch = 1.0;
+  if (preferredVoice) u.voice = preferredVoice;
+  return u;
+}
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 
@@ -466,8 +488,7 @@ function speak(text) {
   synthActive = true;
   if (window.speechSynthesis.speaking || window.speechSynthesis.pending) window.speechSynthesis.cancel();
   setTimeout(() => {
-    const u = new SpeechSynthesisUtterance(text);
-    u.rate = 0.88; u.pitch = 1.0;
+    const u = makeUtterance(text);
     u.onend = u.onerror = () => { synthActive = false; commandFired = false; };
     window.speechSynthesis.speak(u);
   }, 150);
@@ -503,12 +524,10 @@ function speakMovement(rawMarker, instruction, explicitParts) {
   function speakPair(idx) {
     if (idx >= pairs.length) { restartMic(); return; }
     const [markerText, instrText] = pairs[idx];
-    const u1 = new SpeechSynthesisUtterance(markerText);
-    u1.rate = 0.78; u1.pitch = 1.0;
+    const u1 = makeUtterance(markerText, 0.78);
     u1.onend = () => {
       setTimeout(() => {
-        const u2 = new SpeechSynthesisUtterance(instrText);
-        u2.rate = 0.88; u2.pitch = 1.0;
+        const u2 = makeUtterance(instrText);
         u2.onend = () => {
           if (idx < pairs.length - 1) setTimeout(() => speakPair(idx + 1), 1500);
           else restartMic();
