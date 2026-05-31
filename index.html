@@ -292,11 +292,9 @@
 
 <div class="controls">
   <div class="voice-status" id="voice-status"></div>
-  <button class="btn-primary"    id="start-btn"       onclick="startTest()">Start Test</button>
-  <button class="btn-secondary"  id="review-btn"      onclick="openReview()">Review Test</button>
-  <button class="btn-secondary"  id="change-test-btn" onclick="showSelector()">Change Test</button>
-  <button class="btn-primary  hidden" id="next-btn"   onclick="nextMove()">Next →</button>
+  <button class="btn-primary  hidden" id="next-btn"    onclick="nextMove()">Next →</button>
   <button class="btn-secondary hidden" id="restart-btn" onclick="restartTest()">Restart</button>
+  <button class="btn-secondary hidden" id="change-test-btn" onclick="showSelector()">Change Test</button>
   <button class="btn-secondary hidden" id="mic-off-btn" onclick="toggleMic()">Disable Microphone</button>
 </div>
 
@@ -442,30 +440,47 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 
 const selectorList = document.getElementById('selector-list');
 TESTS.forEach((t, i) => {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column;gap:4px';
+
   const btn = document.createElement('button');
   btn.className = 'test-card';
   btn.innerHTML = '<div class="test-card-name">' + t.name + '</div><div class="test-card-detail">' + t.detail + '</div>';
   btn.onclick = () => selectTest(i);
-  selectorList.appendChild(btn);
+
+  const rev = document.createElement('button');
+  rev.className = 'btn-secondary';
+  rev.textContent = 'Review ' + t.name;
+  rev.onclick = () => { selectedTest = TESTS[i]; buildReview(); openReview(); };
+
+  wrap.appendChild(btn);
+  wrap.appendChild(rev);
+  selectorList.appendChild(wrap);
 });
 
 function showSelector() {
   if (micActive) { recognition && recognition.stop(); micActive = false; }
   synthActive = false; commandFired = false;
   window.speechSynthesis && window.speechSynthesis.cancel();
+  synthActive = false; commandFired = false;
   document.getElementById('selector-screen').classList.remove('hidden');
-  document.getElementById('voice-status').textContent = '';
+  document.getElementById('movement-card').classList.remove('active');
+  document.getElementById('next-preview').classList.remove('active');
+  document.getElementById('done-state').classList.remove('active');
+  document.getElementById('next-btn').classList.add('hidden');
+  document.getElementById('restart-btn').classList.add('hidden');
+  document.getElementById('change-test-btn').classList.add('hidden');
+  document.getElementById('mic-off-btn').classList.add('hidden');
   updateMicUI(micActive);
-  resetToIdle();
+  updateVoiceStatus();
 }
 
 function selectTest(idx) {
   selectedTest = TESTS[idx];
   document.getElementById('selector-screen').classList.add('hidden');
   document.getElementById('header-title').textContent = selectedTest.name;
-  document.getElementById('counter').textContent = '0 / ' + selectedTest.movements.length;
   buildReview();
-  resetToIdle();
+  startTest();
 }
 
 // ── Review ────���──────────────────────────────────────────────────────────────
@@ -609,24 +624,10 @@ function markerForSpeech(m) {
 
 // ── Test flow ───────��─────────────────────────────────────────────────────────
 
-function resetToIdle() {
-  current = -1;
-  document.getElementById('done-state').classList.remove('active');
-  document.getElementById('movement-card').classList.remove('active');
-  document.getElementById('next-preview').classList.remove('active');
-  document.getElementById('idle-state').style.display = 'flex';
-  document.getElementById('start-btn').classList.remove('hidden');
-  document.getElementById('review-btn').classList.remove('hidden');
-  document.getElementById('next-btn').classList.add('hidden');
-  document.getElementById('restart-btn').classList.add('hidden');
-  if (selectedTest) document.getElementById('counter').textContent = '0 / ' + selectedTest.movements.length;
-  updateVoiceStatus();
-}
 
 function showMovement(idx) {
   const mvs = selectedTest.movements;
   const m = mvs[idx];
-  document.getElementById('idle-state').style.display = 'none';
   document.getElementById('done-state').classList.remove('active');
   document.getElementById('movement-card').classList.add('active');
   document.getElementById('move-number').textContent = 'MOVEMENT ' + (idx + 1) + ' OF ' + mvs.length;
@@ -670,9 +671,11 @@ function showMovement(idx) {
 
 function startTest() {
   current = 0;
-  document.getElementById('start-btn').classList.add('hidden');
-  document.getElementById('review-btn').classList.add('hidden');
+  document.getElementById('done-state').classList.remove('active');
   document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById('restart-btn').classList.add('hidden');
+  document.getElementById('change-test-btn').classList.remove('hidden');
+  document.getElementById('mic-off-btn').classList.toggle('hidden', !micActive);
   showMovement(current);
 }
 
@@ -699,25 +702,23 @@ function restartTest() {
   synthActive = false; commandFired = false;
   window.speechSynthesis && window.speechSynthesis.cancel();
   document.getElementById('restart-btn').classList.add('hidden');
-  resetToIdle();
+  document.getElementById('next-btn').classList.remove('hidden');
+  startTest();
 }
 
 function selectAndStartTest(idx) {
   if (idx >= TESTS.length) return;
   window.speechSynthesis && window.speechSynthesis.cancel();
-  synthActive = false; commandFired = false; current = -1;
+  synthActive = false; commandFired = false;
   selectTest(idx);
-  startTest();
 }
 
 function updateVoiceStatus() {
   if (!micActive) return;
-  const el = document.getElementById('voice-status');
-  if (current < 0) {
-    el.innerHTML = '<span class="voice-dot"></span>Say Test 1, 2, or 3 to begin';
-  } else {
-    el.innerHTML = '<span class="voice-dot"></span>Next · Repeat · Restart · Test 1/2/3';
-  }
+  document.getElementById('voice-status').innerHTML =
+    current >= 0
+      ? '<span class="voice-dot"></span>Next · Repeat · Restart · Test 1/2/3'
+      : '<span class="voice-dot"></span>Say Test 1, Test 2, or Test 3';
 }
 
 // ── Voice ──────��──────────────────────────────────────────────────────────────
