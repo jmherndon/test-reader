@@ -103,6 +103,10 @@
   .move-badge { background: var(--arena); color: var(--gold); font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.06em; white-space: nowrap; }
   .move-number { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-light); letter-spacing: 0.08em; }
   .move-instruction { font-size: 1.35rem; font-weight: 600; line-height: 1.35; color: var(--text); }
+  .move-parts { display: flex; flex-direction: column; gap: 0.5rem; }
+  .move-part { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.5rem; align-items: baseline; }
+  .move-part-marker { font-family: 'DM Mono', monospace; font-size: 0.7rem; font-weight: 400; color: var(--text-light); letter-spacing: 0.04em; padding-top: 0.15rem; }
+  .move-part-text { font-size: 1.2rem; font-weight: 600; line-height: 1.35; color: var(--text); }
   .move-directive { font-size: 0.9rem; color: var(--text-mid); font-style: italic; line-height: 1.5; border-top: 0.5px solid #E8E0D0; padding-top: 0.6rem; }
   .replay-btn { align-self: flex-end; margin-top: 0.25rem; background: none; border: 0.5px solid rgba(200,151,42,0.3); border-radius: 8px; color: var(--gold); font-size: 1.1rem; padding: 4px 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
   .next-preview { background: rgba(200,151,42,0.08); border: 0.5px solid rgba(200,151,42,0.2); border-radius: 10px; padding: 0.7rem 1rem; display: none; flex-direction: column; gap: 3px; flex-shrink: 0; }
@@ -484,8 +488,23 @@ function showMovement(idx) {
   document.getElementById('movement-card').classList.add('active');
   document.getElementById('move-marker').textContent = m.marker;
   document.getElementById('move-number').textContent = 'MOVEMENT ' + (idx + 1) + ' OF ' + mvs.length;
-  document.getElementById('move-instruction').textContent = m.text;
   document.getElementById('move-directive').textContent = m.directive;
+
+  const instrEl = document.getElementById('move-instruction');
+  const markerParts = m.marker.split(' / ');
+  const textParts = m.parts || splitSentences(m.text);
+  if (markerParts.length > 1 && markerParts.length === textParts.length) {
+    instrEl.innerHTML = '<div class="move-parts">' +
+      markerParts.map((mk, i) =>
+        '<div class="move-part">' +
+          '<div class="move-part-marker">' + mk + '</div>' +
+          '<div class="move-part-text">' + textParts[i] + '</div>' +
+        '</div>'
+      ).join('') +
+    '</div>';
+  } else {
+    instrEl.textContent = m.text;
+  }
   const np = document.getElementById('next-preview');
   if (idx + 1 < mvs.length) {
     document.getElementById('next-text').textContent = mvs[idx + 1].marker + ' — ' + mvs[idx + 1].text;
