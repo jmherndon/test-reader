@@ -448,7 +448,7 @@ function speak(text) {
   setTimeout(() => {
     const u = new SpeechSynthesisUtterance(text);
     u.rate = 0.88; u.pitch = 1.0;
-    u.onend = u.onerror = () => { synthActive = false; commandFired = false; };
+    u.onend = u.onerror = () => { synthActive = false; commandFired = false; if (micActive) setTimeout(() => startRecognition(), 300); };
     window.speechSynthesis.speak(u);
   }, 150);
 }
