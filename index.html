@@ -226,7 +226,7 @@
   <div class="idle-state" id="idle-state">
     <div class="arena-mark">✦</div>
     <div class="idle-hint">Tap Start Test to begin.</div>
-    <div class="idle-sub">Then say Next or Restart</div>
+    <div class="idle-sub">Then say Start, Next, or Restart</div>
   </div>
 
   <div class="movement-card" id="movement-card">
@@ -546,15 +546,16 @@ function startRecognition() {
   recognition.onstart = () => {
     micActive = true;
     document.getElementById('mic-btn').textContent = 'Disable Voice';
-    document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Next or Restart';
+    document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Start, Next, or Restart';
   };
   recognition.onresult = (e) => {
     const result = e.results[e.results.length - 1];
     const t = result[0].transcript.trim().toLowerCase();
     if (result.isFinal) { commandFired = false; return; }
     if (commandFired) return;
-    if ((t.includes('next') || t.includes('go')) && current >= 0 && current < selectedTest.movements.length) { commandFired = true; nextMove(); }
-    else if (t.includes('restart')) { commandFired = true; restartTest(); }
+    if (t.includes('restart'))                                                                               { commandFired = true; restartTest(); }
+    else if (t.includes('start') && current < 0)                                                           { commandFired = true; startTest(); }
+    else if ((t.includes('next') || t.includes('go')) && current >= 0 && current < selectedTest.movements.length) { commandFired = true; nextMove(); }
   };
   recognition.onerror = (e) => {
     if (e.error === 'no-speech' || e.error === 'aborted') return;
