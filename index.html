@@ -518,7 +518,9 @@ function markerForSpeech(m) {
     .replace(/–/g, ', ')
     .replace(/\s*\/\s*/g, ', ')
     .replace(/\s*&\s*/g, ' and ')
-    .toLowerCase();
+    .toLowerCase()
+    // Comma after each letter in "between x and y" so TTS pauses and reads them as letters not words
+    .replace(/between (\w) and (\w)/g, 'between $1, and $2');
 }
 
 // ── Test flow ───────��─────────────────────────────────────────────────────────
