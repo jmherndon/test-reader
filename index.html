@@ -183,9 +183,11 @@
     margin-top: 2px;
     flex-shrink: 0;
   }
-  .review-content { display: flex; flex-direction: column; gap: 3px; }
-  .review-marker { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--gold); letter-spacing: 0.06em; }
-  .review-instruction { font-size: 1rem; font-weight: 600; color: var(--sand); line-height: 1.35; }
+  .review-content { display: flex; flex-direction: column; gap: 6px; }
+  .review-parts { display: flex; flex-direction: column; gap: 0.4rem; }
+  .review-part { display: flex; gap: 0.6rem; align-items: baseline; }
+  .review-part-marker { background: var(--arena-mid); color: var(--gold); font-family: 'DM Mono', monospace; font-size: 0.68rem; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; }
+  .review-part-text { font-size: 0.95rem; font-weight: 600; color: var(--sand); line-height: 1.35; }
   .review-directive { font-size: 0.82rem; color: var(--text-light); font-style: italic; line-height: 1.4; }
   .review-footer { padding: 0.75rem 1.25rem 1.25rem; flex-shrink: 0; border-top: 0.5px solid rgba(200,151,42,0.15); }
 </style>
@@ -396,13 +398,30 @@ function buildReview() {
   const list = document.getElementById('review-list');
   list.innerHTML = '';
   selectedTest.movements.forEach((m, i) => {
+    const markerParts = m.marker.split(' / ');
+    const textParts = m.parts || splitSentences(m.text);
+    const isPaired = markerParts.length > 1 && markerParts.length === textParts.length;
+
+    const pairsHTML = isPaired
+      ? '<div class="review-parts">' +
+          markerParts.map((mk, j) =>
+            '<div class="review-part">' +
+              '<div class="review-part-marker">' + mk + '</div>' +
+              '<div class="review-part-text">' + textParts[j] + '</div>' +
+            '</div>'
+          ).join('') +
+        '</div>'
+      : '<div class="review-part">' +
+          '<div class="review-part-marker">' + m.marker + '</div>' +
+          '<div class="review-part-text">' + m.text + '</div>' +
+        '</div>';
+
     const row = document.createElement('div');
     row.className = 'review-row';
     row.innerHTML =
       '<div class="review-num">' + (i + 1) + '</div>' +
       '<div class="review-content">' +
-        '<div class="review-marker">' + m.marker + '</div>' +
-        '<div class="review-instruction">' + m.text + '</div>' +
+        pairsHTML +
         '<div class="review-directive">' + m.directive + '</div>' +
       '</div>';
     list.appendChild(row);
