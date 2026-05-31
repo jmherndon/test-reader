@@ -456,7 +456,6 @@ function resetToIdle() {
   document.getElementById('idle-state').style.display = 'flex';
   document.getElementById('start-btn').classList.remove('hidden');
   document.getElementById('review-btn').classList.remove('hidden');
-  document.getElementById('change-test-btn').classList.remove('hidden');
   document.getElementById('next-btn').classList.add('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
   if (selectedTest) document.getElementById('counter').textContent = '0 / ' + selectedTest.movements.length;
@@ -487,7 +486,6 @@ function startTest() {
   current = 0;
   document.getElementById('start-btn').classList.add('hidden');
   document.getElementById('review-btn').classList.add('hidden');
-  document.getElementById('change-test-btn').classList.add('hidden');
   document.getElementById('next-btn').classList.remove('hidden');
   showMovement(current);
 }
