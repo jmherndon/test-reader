@@ -486,22 +486,32 @@ function speakMovement(rawMarker, instruction, explicitParts) {
     if (idx >= pairs.length) { restartMic(); return; }
     const [markerText, instrText] = pairs[idx];
     const u1 = new SpeechSynthesisUtterance(markerText);
-    u1.rate = 0.88; u1.pitch = 1.0;
-    const u2 = new SpeechSynthesisUtterance(instrText);
-    u2.rate = 0.88; u2.pitch = 1.0;
-    u2.onend = () => {
-      if (idx < pairs.length - 1) setTimeout(() => speakPair(idx + 1), 1500);
-      else restartMic();
+    u1.rate = 0.78; u1.pitch = 1.0;
+    u1.onend = () => {
+      setTimeout(() => {
+        const u2 = new SpeechSynthesisUtterance(instrText);
+        u2.rate = 0.88; u2.pitch = 1.0;
+        u2.onend = () => {
+          if (idx < pairs.length - 1) setTimeout(() => speakPair(idx + 1), 1500);
+          else restartMic();
+        };
+        u2.onerror = restartMic;
+        window.speechSynthesis.speak(u2);
+      }, 400);
     };
-    u2.onerror = restartMic;
+    u1.onerror = restartMic;
     window.speechSynthesis.speak(u1);
-    window.speechSynthesis.speak(u2);
   }
 
   setTimeout(() => speakPair(0), 350);
 }
 
-function replaySpeak() { if (lastSpoken) speak(lastSpoken); }
+function replaySpeak() {
+  if (current >= 0 && selectedTest) {
+    const m = selectedTest.movements[current];
+    speakMovement(m.marker, m.text, m.parts);
+  }
+}
 
 function markerForSpeech(m) {
   return m
