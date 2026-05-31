@@ -109,6 +109,14 @@
   .move-part-text { font-size: 1.2rem; font-weight: 600; line-height: 1.35; color: var(--text); }
   .move-directive { font-size: 0.9rem; color: var(--text-mid); font-style: italic; line-height: 1.5; border-top: 0.5px solid #E8E0D0; padding-top: 0.6rem; }
   .replay-btn { align-self: flex-end; margin-top: 0.25rem; background: none; border: 0.5px solid rgba(200,151,42,0.3); border-radius: 8px; color: var(--gold); font-size: 1.1rem; padding: 4px 10px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  /* Arena diagram */
+  .arena-svg { width: 100%; display: block; margin: 0.1rem 0; }
+  .arena-svg .arena-field { fill: rgba(200,151,42,0.04); stroke: rgba(200,151,42,0.22); stroke-width: 1.5; }
+  .arena-svg .arena-cl { stroke: rgba(200,151,42,0.1); stroke-width: 0.75; stroke-dasharray: 3,3; }
+  .arena-svg .am circle { fill: #2C2416; stroke: rgba(200,151,42,0.18); stroke-width: 1; transition: fill 0.2s, stroke 0.2s; }
+  .arena-svg .am text { fill: rgba(200,151,42,0.3); font-family: 'DM Mono', monospace; font-size: 7.5px; text-anchor: middle; dominant-baseline: middle; transition: fill 0.2s; }
+  .arena-svg .am.active circle { fill: var(--gold); stroke: var(--gold-light); stroke-width: 1.5; }
+  .arena-svg .am.active text { fill: #2C2416; font-weight: bold; }
   .next-preview { background: rgba(200,151,42,0.08); border: 0.5px solid rgba(200,151,42,0.2); border-radius: 10px; padding: 0.7rem 1rem; display: none; flex-direction: column; gap: 3px; flex-shrink: 0; }
   .next-preview.active { display: flex; }
   .next-label { font-family: 'DM Mono', monospace; font-size: 0.65rem; color: var(--gold); letter-spacing: 0.1em; text-transform: uppercase; }
@@ -240,6 +248,19 @@
       <div class="move-badge" id="move-marker"></div>
       <div class="move-number" id="move-number"></div>
     </div>
+    <svg class="arena-svg" viewBox="0 0 300 82" xmlns="http://www.w3.org/2000/svg">
+      <rect x="26" y="14" width="248" height="54" rx="2" class="arena-field"/>
+      <line x1="26" y1="41" x2="274" y2="41" class="arena-cl"/>
+      <g id="am-A"  class="am"><circle cx="26"  cy="41" r="8"/><text x="26"  y="41">A</text></g>
+      <g id="am-K"  class="am"><circle cx="51"  cy="14" r="7"/><text x="51"  y="14">K</text></g>
+      <g id="am-F"  class="am"><circle cx="51"  cy="68" r="7"/><text x="51"  y="68">F</text></g>
+      <g id="am-E"  class="am"><circle cx="150" cy="14" r="7"/><text x="150" y="14">E</text></g>
+      <g id="am-B"  class="am"><circle cx="150" cy="68" r="7"/><text x="150" y="68">B</text></g>
+      <g id="am-H"  class="am"><circle cx="249" cy="14" r="7"/><text x="249" y="14">H</text></g>
+      <g id="am-M"  class="am"><circle cx="249" cy="68" r="7"/><text x="249" y="68">M</text></g>
+      <g id="am-C"  class="am"><circle cx="274" cy="41" r="8"/><text x="274" y="41">C</text></g>
+      <g id="am-X"  class="am"><circle cx="150" cy="41" r="7"/><text x="150" y="41">X</text></g>
+    </svg>
     <div class="move-instruction" id="move-instruction"></div>
     <div class="move-directive" id="move-directive"></div>
     <button class="replay-btn" onclick="replaySpeak()" title="Replay">🔊</button>
@@ -513,6 +534,18 @@ function replaySpeak() {
   }
 }
 
+const ARENA_IDS = ['A','B','C','E','F','H','K','M','X'];
+
+function updateArena(rawMarker) {
+  const active = new Set(
+    rawMarker.toUpperCase().replace(/–/g, '-').split(/[^A-Z]+/).filter(p => ARENA_IDS.includes(p))
+  );
+  ARENA_IDS.forEach(id => {
+    const el = document.getElementById('am-' + id);
+    if (el) el.classList.toggle('active', active.has(id));
+  });
+}
+
 function markerForSpeech(m) {
   return m
     .replace(/–/g, ', ')
@@ -578,6 +611,7 @@ function showMovement(idx) {
     np.classList.remove('active');
   }
   document.getElementById('counter').textContent = (idx + 1) + ' / ' + mvs.length;
+  updateArena(m.marker);
   speakMovement(m.marker, m.text, m.parts);
 }
 
