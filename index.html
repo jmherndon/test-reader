@@ -671,38 +671,41 @@ function toggleMic() {
 }
 
 function startRecognition() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  recognition = new SR();
-  recognition.continuous = true;
-  recognition.interimResults = true;
-  recognition.lang = 'en-US';
-  recognition.onstart = () => {
-    micActive = true;
-    document.getElementById('mic-btn').textContent = 'Disable Voice';
-    document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Start, Next, Repeat, or Restart';
-  };
-  recognition.onresult = (e) => {
-    const result = e.results[e.results.length - 1];
-    const t = result[0].transcript.trim().toLowerCase();
-    if (result.isFinal) { commandFired = false; return; }
-    if (commandFired) return;
-    if (t.includes('restart'))                                                                                     { commandFired = true; restartTest(); }
-    else if (t.includes('repeat') && current >= 0)                                                               { commandFired = true; replaySpeak(); }
-    else if (t.includes('start') && current < 0)                                                                 { commandFired = true; startTest(); }
-    else if ((t.includes('next') || t.includes('go')) && current >= 0 && current < selectedTest.movements.length) { commandFired = true; nextMove(); }
-  };
-  recognition.onerror = (e) => {
-    if (e.error === 'no-speech' || e.error === 'aborted') return;
-    document.getElementById('voice-status').textContent = 'Mic error: ' + e.error;
-    micActive = false;
-  };
-  recognition.onend = () => {
-    if (micActive && !synthActive) {
-      commandFired = false;
-      setTimeout(() => { try { recognition.start(); } catch(err) {} }, 150);
-    }
-  };
-  recognition.start();
+  if (!recognition) {
+    // Create the object once — reusing it avoids repeated permission prompts on Chrome iOS
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.lang = 'en-US';
+    recognition.onstart = () => {
+      micActive = true;
+      document.getElementById('mic-btn').textContent = 'Disable Voice';
+      document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Start, Next, Repeat, or Restart';
+    };
+    recognition.onresult = (e) => {
+      const result = e.results[e.results.length - 1];
+      const t = result[0].transcript.trim().toLowerCase();
+      if (result.isFinal) { commandFired = false; return; }
+      if (commandFired) return;
+      if (t.includes('restart'))                                                                                       { commandFired = true; restartTest(); }
+      else if (t.includes('repeat') && current >= 0)                                                                 { commandFired = true; replaySpeak(); }
+      else if (t.includes('start') && current < 0)                                                                   { commandFired = true; startTest(); }
+      else if ((t.includes('next') || t.includes('go')) && current >= 0 && current < selectedTest.movements.length) { commandFired = true; nextMove(); }
+    };
+    recognition.onerror = (e) => {
+      if (e.error === 'no-speech' || e.error === 'aborted') return;
+      document.getElementById('voice-status').textContent = 'Mic error: ' + e.error;
+      micActive = false;
+    };
+    recognition.onend = () => {
+      if (micActive && !synthActive) {
+        commandFired = false;
+        setTimeout(() => { try { recognition.start(); } catch(err) {} }, 150);
+      }
+    };
+  }
+  try { recognition.start(); } catch(err) {}
 }
 </script>
 </body>
