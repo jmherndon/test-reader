@@ -221,6 +221,7 @@
       <option value="">Default</option>
     </select>
   </div>
+  <button class="btn-secondary" id="mic-btn" onclick="toggleMic()" style="margin-top:0.5rem">Enable Microphone</button>
 </div>
 
 <!-- Review screen (overlay) -->
@@ -296,7 +297,7 @@
   <button class="btn-secondary"  id="change-test-btn" onclick="showSelector()">Change Test</button>
   <button class="btn-primary  hidden" id="next-btn"   onclick="nextMove()">Next →</button>
   <button class="btn-secondary hidden" id="restart-btn" onclick="restartTest()">Restart</button>
-  <button class="btn-secondary"  id="mic-btn"         onclick="toggleMic()">Enable Voice</button>
+  <button class="btn-secondary hidden" id="mic-off-btn" onclick="toggleMic()">Disable Microphone</button>
 </div>
 
 <script>
@@ -454,7 +455,7 @@ function showSelector() {
   window.speechSynthesis && window.speechSynthesis.cancel();
   document.getElementById('selector-screen').classList.remove('hidden');
   document.getElementById('voice-status').textContent = '';
-  document.getElementById('mic-btn').textContent = 'Enable Voice';
+  updateMicUI(micActive);
   resetToIdle();
 }
 
@@ -698,7 +699,7 @@ function restartTest() {
   window.speechSynthesis && window.speechSynthesis.cancel();
   document.getElementById('restart-btn').classList.add('hidden');
   document.getElementById('voice-status').textContent = '';
-  document.getElementById('mic-btn').textContent = 'Enable Voice';
+  updateMicUI(micActive);
   resetToIdle();
 }
 
@@ -713,11 +714,17 @@ function toggleMic() {
     recognition && recognition.stop();
     micActive = false;
     synthActive = false; commandFired = false;
-    document.getElementById('mic-btn').textContent = 'Enable Voice';
+    updateMicUI(false);
     document.getElementById('voice-status').textContent = '';
   } else {
     startRecognition();
   }
+}
+
+function updateMicUI(active) {
+  document.getElementById('mic-btn').textContent = active ? 'Microphone On' : 'Enable Microphone';
+  const offBtn = document.getElementById('mic-off-btn');
+  if (offBtn) offBtn.classList.toggle('hidden', !active);
 }
 
 function startRecognition() {
@@ -730,7 +737,7 @@ function startRecognition() {
     recognition.lang = 'en-US';
     recognition.onstart = () => {
       micActive = true;
-      document.getElementById('mic-btn').textContent = 'Disable Voice';
+      updateMicUI(true);
       document.getElementById('voice-status').innerHTML = '<span class="voice-dot"></span>Listening — say Start, Next, Repeat, or Restart';
     };
     recognition.onresult = (e) => {
@@ -747,6 +754,7 @@ function startRecognition() {
       if (e.error === 'no-speech' || e.error === 'aborted') return;
       document.getElementById('voice-status').textContent = 'Mic error: ' + e.error;
       micActive = false;
+      updateMicUI(false);
     };
     recognition.onend = () => {
       if (micActive && !synthActive) {
