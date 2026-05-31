@@ -126,7 +126,12 @@
   .done-mark { font-size: 3rem; color: var(--gold-light); }
   .done-title { font-size: 1.6rem; font-weight: 600; color: var(--sand); }
   .done-sub { font-size: 1rem; font-style: italic; color: var(--text-light); }
-  .controls { padding: 0.75rem 1.5rem 1.25rem; display: flex; flex-direction: column; gap: 0.6rem; flex-shrink: 0; border-top: 0.5px solid rgba(200,151,42,0.15); position: relative; z-index: 201; background: var(--arena); }
+  .controls { padding: 0.6rem 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; border-top: 0.5px solid rgba(200,151,42,0.15); position: relative; z-index: 201; background: var(--arena); }
+  .footer-row { display: flex; gap: 0.4rem; align-items: center; }
+  .footer-row .voice-select { flex: 2; padding: 0.45rem 0.6rem; font-size: 0.75rem; }
+  .btn-sm { flex: 1; padding: 0.45rem 0.25rem; background: transparent; color: var(--text-light); border: 0.5px solid rgba(200,151,42,0.25); border-radius: 8px; font-family: 'DM Mono', monospace; font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; cursor: pointer; -webkit-tap-highlight-color: transparent; white-space: nowrap; }
+  .btn-sm:active { background: rgba(200,151,42,0.1); }
+  .btn-sm.on { color: var(--gold); border-color: rgba(200,151,42,0.5); }
   .btn-primary { width: 100%; padding: 1rem; background: var(--gold); color: var(--arena); border: none; border-radius: 12px; font-family: 'DM Mono', monospace; font-size: 1rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; transition: background 0.15s, transform 0.1s; -webkit-tap-highlight-color: transparent; }
   .btn-primary:active { background: var(--gold-light); transform: scale(0.98); }
   .btn-secondary { width: 100%; padding: 0.75rem; background: transparent; color: var(--text-light); border: 0.5px solid rgba(200,151,42,0.25); border-radius: 10px; font-family: 'DM Mono', monospace; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; -webkit-tap-highlight-color: transparent; }
@@ -279,18 +284,15 @@
 
 <div class="controls">
   <div class="voice-status" id="voice-status"></div>
-  <button class="btn-primary  hidden" id="next-btn"       onclick="nextMove()">Next →</button>
-  <button class="btn-secondary hidden" id="restart-btn"   onclick="restartTest()">Restart</button>
+  <button class="btn-primary  hidden" id="next-btn"         onclick="nextMove()">Next →</button>
+  <button class="btn-secondary hidden" id="restart-btn"     onclick="restartTest()">Restart</button>
   <button class="btn-secondary hidden" id="change-test-btn" onclick="showSelector()">Change Test</button>
-  <div class="voice-picker">
-    <div class="voice-picker-label">Voice</div>
+  <div class="footer-row">
     <select class="voice-select" id="voice-select" onchange="selectVoice(this.value)">
-      <option value="">Default</option>
+      <option value="">Default voice</option>
     </select>
-  </div>
-  <div style="display:flex;gap:0.5rem">
-    <button class="btn-secondary" id="mic-btn"    onclick="toggleMic()"    style="flex:1">Enable Microphone</button>
-    <button class="btn-secondary" id="silent-btn" onclick="toggleSilent()" style="flex:1">Silent Mode</button>
+    <button class="btn-sm" id="mic-btn"    onclick="toggleMic()">Mic Off</button>
+    <button class="btn-sm" id="silent-btn" onclick="toggleSilent()">Sound</button>
   </div>
 </div>
 
@@ -392,8 +394,9 @@ let silentMode = false;
 
 function toggleSilent() {
   silentMode = !silentMode;
-  document.getElementById('silent-btn').textContent = silentMode ? 'Audio On' : 'Silent Mode';
-  document.getElementById('silent-btn').style.color = silentMode ? 'var(--gold)' : '';
+  const btn = document.getElementById('silent-btn');
+  btn.textContent = silentMode ? 'Muted' : 'Sound';
+  btn.classList.toggle('on', silentMode);
   if (silentMode) { window.speechSynthesis && window.speechSynthesis.cancel(); synthActive = false; }
 }
 
@@ -750,7 +753,9 @@ function toggleMic() {
 }
 
 function updateMicUI(active) {
-  document.getElementById('mic-btn').textContent = active ? 'Microphone On' : 'Enable Microphone';
+  const btn = document.getElementById('mic-btn');
+  btn.textContent = active ? 'Mic On' : 'Mic Off';
+  btn.classList.toggle('on', active);
 }
 
 function startRecognition() {
