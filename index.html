@@ -309,6 +309,7 @@ const TESTS = [
     id: 'training1',
     name: 'Training Level · Test 1',
     detail: '13 movements · 260 pts',
+    pdf: '2023%20Training%201%204.7.pdf',
     purpose: 'Confirm correct basics: suppleness laterally and longitudinally, moving freely forward in a clear rhythm with steady tempo, readily accepting contact. Correct geometry and lines of travel.',
     movements: [
       { marker:"A / X",               text:"Enter working trot. Halt, salute. Proceed working trot.",                        parts:["Enter working trot.", "Halt, salute. Proceed working trot."],          directive:"Regularity and quality of trot; willing calm transitions; straightness; attentiveness; immobility (min. 3 sec)." },
@@ -330,6 +331,7 @@ const TESTS = [
     id: 'training2',
     name: 'Training Level · Test 2',
     detail: '16 movements · 290 pts',
+    pdf: '2023%20Training%202%204.7.pdf',
     purpose: 'Confirm correct basics: suppleness laterally and longitudinally, moving freely forward in a clear rhythm with steady tempo, readily accepting contact. Correct geometry and lines of travel. Introduces stretch circle in trot.',
     movements: [
       { marker:"A / X",               text:"Enter working trot. Halt, salute. Proceed working trot.",                        parts:["Enter working trot.", "Halt, salute. Proceed working trot."],          directive:"Regularity and quality of trot; willing calm transitions; straightness; attentiveness; immobility (min. 3 sec)." },
@@ -354,6 +356,7 @@ const TESTS = [
     id: 'training3',
     name: 'Training Level · Test 3',
     detail: '13 movements · 250 pts',
+    pdf: '2023%20Training%203%204.7.pdf',
     purpose: 'Confirm correct basics: suppleness laterally and longitudinally, moving freely forward in a clear rhythm with steady tempo, readily accepting contact. Introduces changing of bend on a shallow loop and canter-trot transition on the diagonal.',
     movements: [
       { marker:"A / X",           text:"Enter working trot. Halt, salute. Proceed working trot.",                                              parts:["Enter working trot.", "Halt, salute. Proceed working trot."],  directive:"Regularity and quality of trot; willing calm transitions; straightness; attentiveness; immobility (min. 3 sec)." },
@@ -434,11 +437,27 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
 
 const selectorList = document.getElementById('selector-list');
 TESTS.forEach((t, i) => {
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'position:relative';
+
   const btn = document.createElement('button');
   btn.className = 'test-card';
   btn.innerHTML = '<div class="test-card-name">' + t.name + '</div><div class="test-card-detail">' + t.detail + '</div>';
   btn.onclick = () => selectTest(i);
-  selectorList.appendChild(btn);
+
+  if (t.pdf) {
+    const pdfBtn = document.createElement('a');
+    pdfBtn.href = t.pdf;
+    pdfBtn.target = '_blank';
+    pdfBtn.rel = 'noopener';
+    pdfBtn.style.cssText = 'position:absolute;top:50%;right:0.9rem;transform:translateY(-50%);color:rgba(200,151,42,0.6);text-decoration:none;line-height:1;';
+    pdfBtn.innerHTML = '<svg viewBox="0 0 18 22" width="18" height="22" fill="currentColor"><rect x="1" y="1" width="13" height="20" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 1 L11 7 L17 7" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M11 1 L17 7 L17 21 Q17 21 16 21 L2 21 Q1 21 1 20 L1 2 Q1 1 2 1 Z" fill="none"/><text x="9" y="16" font-size="4.5" text-anchor="middle" font-family="DM Mono,monospace" fill="currentColor" font-weight="bold">PDF</text></svg>';
+    pdfBtn.onclick = (e) => e.stopPropagation();
+    wrap.appendChild(pdfBtn);
+  }
+
+  wrap.appendChild(btn);
+  selectorList.appendChild(wrap);
 });
 
 function showSelector() {
