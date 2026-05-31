@@ -280,7 +280,7 @@ const TESTS = [
     detail: '13 movements · 260 pts',
     purpose: 'Confirm correct basics: suppleness laterally and longitudinally, moving freely forward in a clear rhythm with steady tempo, readily accepting contact. Correct geometry and lines of travel.',
     movements: [
-      { marker:"A / X",               text:"Enter working trot. Halt, salute. Proceed working trot.",                                                                                       directive:"Regularity and quality of trot; willing calm transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+      { marker:"A / X",               text:"Enter working trot. Halt, salute. Proceed working trot.",                        parts:["Enter working trot.", "Halt, salute. Proceed working trot."],          directive:"Regularity and quality of trot; willing calm transitions; straightness; attentiveness; immobility (min. 3 sec)." },
       { marker:"C / E",               text:"Track left. Circle left 20m.",                                                                                                                  directive:"Regularity and quality of trot; shape and size of circle; bend; balance." },
       { marker:"A",                   text:"Circle left 20m, developing left lead canter in the first quarter of circle.",                                                                   directive:"Willing calm transition; regularity and quality of gaits; shape and size of circle; bend; balance." },
       { marker:"A–F–B",               text:"Working canter.",                                                                                                                               directive:"Regularity and quality of canter; bend and balance in corner; straightness." },
@@ -301,7 +301,7 @@ const TESTS = [
     detail: '16 movements · 290 pts',
     purpose: 'Confirm correct basics: suppleness laterally and longitudinally, moving freely forward in a clear rhythm with steady tempo, readily accepting contact. Correct geometry and lines of travel. Introduces stretch circle in trot.',
     movements: [
-      { marker:"A / X",               text:"Enter working trot. Halt, salute. Proceed working trot.",                                                                                       directive:"Regularity and quality of trot; willing calm transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+      { marker:"A / X",               text:"Enter working trot. Halt, salute. Proceed working trot.",                        parts:["Enter working trot.", "Halt, salute. Proceed working trot."],          directive:"Regularity and quality of trot; willing calm transitions; straightness; attentiveness; immobility (min. 3 sec)." },
       { marker:"C / B",               text:"Track right. Circle right 20m.",                                                                                                               directive:"Regularity and quality of trot; shape and size of circle; bend and balance." },
       { marker:"K–X–M",               text:"Change rein.",                                                                                                                                  directive:"Regularity and quality of trot; straightness; bend and balance in corner." },
       { marker:"Between C & H",       text:"Working canter left lead.",                                                                                                                     directive:"Willing calm transition; regularity and quality of gaits; bend and balance in corner; straightness." },
@@ -414,7 +414,7 @@ function splitSentences(text) {
   return parts.map((s, i) => i < parts.length - 1 ? s + '.' : s);
 }
 
-function speakMovement(rawMarker, instruction) {
+function speakMovement(rawMarker, instruction, explicitParts) {
   if (!window.speechSynthesis) return;
   lastSpoken = rawMarker + '. ' + instruction;
   synthActive = true;
@@ -422,7 +422,7 @@ function speakMovement(rawMarker, instruction) {
   if (window.speechSynthesis.speaking || window.speechSynthesis.pending) window.speechSynthesis.cancel();
 
   const markerParts = rawMarker.split(' / ');
-  const textParts = splitSentences(instruction);
+  const textParts = explicitParts || splitSentences(instruction);
 
   // Pair each sub-marker with its sentence when counts match; otherwise read marker then full text
   let texts;
@@ -494,7 +494,7 @@ function showMovement(idx) {
     np.classList.remove('active');
   }
   document.getElementById('counter').textContent = (idx + 1) + ' / ' + mvs.length;
-  speakMovement(m.marker, m.text);
+  speakMovement(m.marker, m.text, m.parts);
 }
 
 function startTest() {
