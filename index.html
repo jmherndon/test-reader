@@ -239,7 +239,10 @@
     <div class="test-title" id="header-title"></div>
     <div class="test-subtitle">USEF 2023</div>
   </div>
-  <div class="counter" id="counter">0 / —</div>
+  <div style="display:flex;align-items:center;gap:0.5rem">
+    <button id="change-test-btn" onclick="showSelector()" class="hidden" style="background:none;border:none;color:var(--gold);font-family:'DM Mono',monospace;font-size:0.72rem;letter-spacing:0.06em;cursor:pointer;padding:0;-webkit-tap-highlight-color:transparent;opacity:0.85">← Tests</button>
+    <div class="counter" id="counter">0 / —</div>
+  </div>
 </div>
 
 <div class="main">
@@ -282,7 +285,7 @@
   <div class="voice-status" id="voice-status"></div>
   <button class="btn-primary  hidden" id="next-btn"         onclick="nextMove()">Next →</button>
   <button class="btn-secondary hidden" id="restart-btn"     onclick="restartTest()">Restart</button>
-  <button class="btn-secondary hidden" id="change-test-btn" onclick="showSelector()">Change Test</button>
+
   <div class="footer-row">
     <button class="btn-sm" id="silent-btn" onclick="toggleSilent()">Sound</button>
     <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-light);letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap">Voice</span>
