@@ -464,12 +464,11 @@ function speak(text) {
   if (!window.speechSynthesis) return;
   lastSpoken = text;
   synthActive = true;
-  if (recognition && micActive) recognition.stop();
   if (window.speechSynthesis.speaking || window.speechSynthesis.pending) window.speechSynthesis.cancel();
   setTimeout(() => {
     const u = new SpeechSynthesisUtterance(text);
     u.rate = 0.88; u.pitch = 1.0;
-    u.onend = u.onerror = () => { synthActive = false; commandFired = false; if (micActive) setTimeout(() => startRecognition(), 300); };
+    u.onend = u.onerror = () => { synthActive = false; commandFired = false; };
     window.speechSynthesis.speak(u);
   }, 150);
 }
@@ -483,7 +482,6 @@ function speakMovement(rawMarker, instruction, explicitParts) {
   if (!window.speechSynthesis) return;
   lastSpoken = rawMarker + '. ' + instruction;
   synthActive = true;
-  if (recognition && micActive) recognition.stop();
   if (window.speechSynthesis.speaking || window.speechSynthesis.pending) window.speechSynthesis.cancel();
 
   const markerParts = rawMarker.split(' / ');
@@ -499,7 +497,6 @@ function speakMovement(rawMarker, instruction, explicitParts) {
   const restartMic = () => {
     clearTimeout(fallback);
     synthActive = false; commandFired = false;
-    if (micActive) setTimeout(() => startRecognition(), 300);
   };
   const fallback = setTimeout(restartMic, estimatedMs);
 
