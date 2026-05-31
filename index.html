@@ -427,32 +427,38 @@ function speakMovement(rawMarker, instruction, explicitParts) {
 
   const markerParts = rawMarker.split(' / ');
   const textParts = explicitParts || splitSentences(instruction);
+  const pairs = (markerParts.length > 1 && markerParts.length === textParts.length)
+    ? markerParts.map((m, i) => [markerForSpeech(m), textParts[i]])
+    : [[markerForSpeech(rawMarker), instruction]];
 
-  // Pair each sub-marker with its sentence when counts match; otherwise read marker then full text
-  let texts;
-  if (markerParts.length > 1 && markerParts.length === textParts.length) {
-    texts = markerParts.flatMap((m, i) => [markerForSpeech(m), textParts[i]]);
-  } else {
-    texts = [markerForSpeech(rawMarker), instruction];
+  const allWords = pairs.flat().join(' ').split(/\s+/).length;
+  const pauseMs = (pairs.length - 1) * 1500;
+  const estimatedMs = Math.ceil(allWords / 2.5 * 1000) + pauseMs + 2000;
+
+  const restartMic = () => {
+    clearTimeout(fallback);
+    synthActive = false; commandFired = false;
+    if (micActive) setTimeout(() => startRecognition(), 300);
+  };
+  const fallback = setTimeout(restartMic, estimatedMs);
+
+  function speakPair(idx) {
+    if (idx >= pairs.length) { restartMic(); return; }
+    const [markerText, instrText] = pairs[idx];
+    const u1 = new SpeechSynthesisUtterance(markerText);
+    u1.rate = 0.88; u1.pitch = 1.0;
+    const u2 = new SpeechSynthesisUtterance(instrText);
+    u2.rate = 0.88; u2.pitch = 1.0;
+    u2.onend = () => {
+      if (idx < pairs.length - 1) setTimeout(() => speakPair(idx + 1), 1500);
+      else restartMic();
+    };
+    u2.onerror = restartMic;
+    window.speechSynthesis.speak(u1);
+    window.speechSynthesis.speak(u2);
   }
 
-  setTimeout(() => {
-    const words = texts.join(' ').split(/\s+/).length;
-    const estimatedMs = Math.ceil(words / 2.5 * 1000) + 2000;
-    const restartMic = () => {
-      clearTimeout(fallback);
-      synthActive = false; commandFired = false;
-      if (micActive) setTimeout(() => startRecognition(), 300);
-    };
-    const fallback = setTimeout(restartMic, estimatedMs);
-
-    texts.forEach((t, i) => {
-      const u = new SpeechSynthesisUtterance(t);
-      u.rate = 0.88; u.pitch = 1.0;
-      if (i === texts.length - 1) u.onend = u.onerror = restartMic;
-      window.speechSynthesis.speak(u);
-    });
-  }, 350);
+  setTimeout(() => speakPair(0), 350);
 }
 
 function replaySpeak() { if (lastSpoken) speak(lastSpoken); }
