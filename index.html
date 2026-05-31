@@ -284,11 +284,12 @@
   <button class="btn-secondary hidden" id="restart-btn"     onclick="restartTest()">Restart</button>
   <button class="btn-secondary hidden" id="change-test-btn" onclick="showSelector()">Change Test</button>
   <div class="footer-row">
-    <select class="voice-select" id="voice-select" onchange="selectVoice(this.value)">
-      <option value="">Default voice</option>
-    </select>
-    <button class="btn-sm" id="mic-btn"    onclick="toggleMic()">Mic Off</button>
     <button class="btn-sm" id="silent-btn" onclick="toggleSilent()">Sound</button>
+    <span style="font-family:'DM Mono',monospace;font-size:0.65rem;color:var(--text-light);letter-spacing:0.06em;text-transform:uppercase;white-space:nowrap">Voice</span>
+    <select class="voice-select" id="voice-select" onchange="selectVoice(this.value)" style="flex:2">
+      <option value="">Default</option>
+    </select>
+    <button class="btn-sm" id="mic-btn" onclick="toggleMic()">Mic Off</button>
   </div>
 </div>
 
