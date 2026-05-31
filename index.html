@@ -504,9 +504,13 @@ function showMovement(idx) {
       ).join('') +
     '</div>';
   } else {
-    markerEl.style.display = '';
-    markerEl.textContent = m.marker;
-    instrEl.textContent = m.text;
+    markerEl.style.display = 'none';
+    instrEl.innerHTML = '<div class="move-parts">' +
+      '<div class="move-part">' +
+        '<div class="move-part-marker">' + m.marker + '</div>' +
+        '<div class="move-part-text">' + m.text + '</div>' +
+      '</div>' +
+    '</div>';
   }
   const np = document.getElementById('next-preview');
   if (idx + 1 < mvs.length) {
