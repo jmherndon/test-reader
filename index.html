@@ -409,19 +409,31 @@ function speak(text) {
   }, 150);
 }
 
-function speakMovement(marker, instruction) {
+function splitSentences(text) {
+  const parts = text.split(/\.\s+(?=[A-Z])/);
+  return parts.map((s, i) => i < parts.length - 1 ? s + '.' : s);
+}
+
+function speakMovement(rawMarker, instruction) {
   if (!window.speechSynthesis) return;
-  lastSpoken = marker + '. ' + instruction;
+  lastSpoken = rawMarker + '. ' + instruction;
   synthActive = true;
   if (recognition && micActive) recognition.stop();
   if (window.speechSynthesis.speaking || window.speechSynthesis.pending) window.speechSynthesis.cancel();
-  setTimeout(() => {
-    const u1 = new SpeechSynthesisUtterance(marker);
-    u1.rate = 0.88; u1.pitch = 1.0;
-    const u2 = new SpeechSynthesisUtterance(instruction);
-    u2.rate = 0.88; u2.pitch = 1.0;
 
-    const words = (marker + ' ' + instruction).split(/\s+/).length;
+  const markerParts = rawMarker.split(' / ');
+  const textParts = splitSentences(instruction);
+
+  // Pair each sub-marker with its sentence when counts match; otherwise read marker then full text
+  let texts;
+  if (markerParts.length > 1 && markerParts.length === textParts.length) {
+    texts = markerParts.flatMap((m, i) => [markerForSpeech(m), textParts[i]]);
+  } else {
+    texts = [markerForSpeech(rawMarker), instruction];
+  }
+
+  setTimeout(() => {
+    const words = texts.join(' ').split(/\s+/).length;
     const estimatedMs = Math.ceil(words / 2.5 * 1000) + 2000;
     const restartMic = () => {
       clearTimeout(fallback);
@@ -429,10 +441,13 @@ function speakMovement(marker, instruction) {
       if (micActive) setTimeout(() => startRecognition(), 300);
     };
     const fallback = setTimeout(restartMic, estimatedMs);
-    u2.onend = u2.onerror = restartMic;
 
-    window.speechSynthesis.speak(u1);
-    window.speechSynthesis.speak(u2);
+    texts.forEach((t, i) => {
+      const u = new SpeechSynthesisUtterance(t);
+      u.rate = 0.88; u.pitch = 1.0;
+      if (i === texts.length - 1) u.onend = u.onerror = restartMic;
+      window.speechSynthesis.speak(u);
+    });
   }, 350);
 }
 
@@ -479,7 +494,7 @@ function showMovement(idx) {
     np.classList.remove('active');
   }
   document.getElementById('counter').textContent = (idx + 1) + ' / ' + mvs.length;
-  speakMovement(markerForSpeech(m.marker), m.text);
+  speakMovement(m.marker, m.text);
 }
 
 function startTest() {
