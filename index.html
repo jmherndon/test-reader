@@ -283,7 +283,10 @@
 
 <div class="controls">
   <div class="voice-status" id="voice-status"></div>
-  <button class="btn-primary  hidden" id="next-btn"         onclick="nextMove()">Next →</button>
+  <div class="hidden" id="nav-row" style="display:flex;gap:0.5rem">
+    <button class="btn-secondary" id="back-btn" onclick="prevMove()" style="flex:1">← Back</button>
+    <button class="btn-primary"   id="next-btn" onclick="nextMove()" style="flex:2">Next →</button>
+  </div>
   <button class="btn-secondary hidden" id="restart-btn"     onclick="restartTest()">Restart</button>
 
   <div class="footer-row">
@@ -482,7 +485,7 @@ function showSelector() {
   document.getElementById('movement-card').classList.remove('active');
   document.getElementById('next-preview').classList.remove('active');
   document.getElementById('done-state').classList.remove('active');
-  document.getElementById('next-btn').classList.add('hidden');
+  document.getElementById('nav-row').classList.add('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
   document.getElementById('change-test-btn').classList.add('hidden');
   updateMicUI(micActive);
@@ -678,6 +681,7 @@ function showMovement(idx) {
     np.classList.remove('active');
   }
   document.getElementById('counter').textContent = (idx + 1) + ' / ' + mvs.length;
+  document.getElementById('back-btn').style.visibility = idx > 0 ? 'visible' : 'hidden';
   updateArena(m.marker);
   updateVoiceStatus();
   speakMovement(m.marker, m.text, m.parts);
@@ -686,10 +690,14 @@ function showMovement(idx) {
 function startTest() {
   current = 0;
   document.getElementById('done-state').classList.remove('active');
-  document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById('nav-row').classList.remove('hidden');
   document.getElementById('restart-btn').classList.add('hidden');
   document.getElementById('change-test-btn').classList.remove('hidden');
   showMovement(current);
+}
+
+function prevMove() {
+  if (current > 0) { current--; showMovement(current); }
 }
 
 function nextMove() {
@@ -705,7 +713,7 @@ function endTest() {
   document.getElementById('movement-card').classList.remove('active');
   document.getElementById('next-preview').classList.remove('active');
   document.getElementById('done-state').classList.add('active');
-  document.getElementById('next-btn').classList.add('hidden');
+  document.getElementById('nav-row').classList.add('hidden');
   document.getElementById('restart-btn').classList.remove('hidden');
   document.getElementById('counter').textContent = selectedTest.movements.length + ' / ' + selectedTest.movements.length;
   speak('Test complete. Well ridden.');
@@ -715,7 +723,7 @@ function restartTest() {
   synthActive = false; commandFired = false;
   window.speechSynthesis && window.speechSynthesis.cancel();
   document.getElementById('restart-btn').classList.add('hidden');
-  document.getElementById('next-btn').classList.remove('hidden');
+  document.getElementById('nav-row').classList.remove('hidden');
   startTest();
 }
 
@@ -730,7 +738,7 @@ function updateVoiceStatus() {
   if (!micActive) return;
   document.getElementById('voice-status').innerHTML =
     current >= 0
-      ? '<span class="voice-dot"></span>Next · Repeat · Restart · Test 1/2/3'
+      ? '<span class="voice-dot"></span>Back · Next · Repeat · Restart · Test 1/2/3'
       : '<span class="voice-dot"></span>Say Test 1, Test 2, or Test 3';
 }
 
@@ -780,6 +788,7 @@ function startRecognition() {
       else if (t.match(/\btest (two|to+|2)\b/))                                                                      { commandFired = true; selectAndStartTest(1); }
       else if (t.match(/\btest (three|3)\b/))                                                                        { commandFired = true; selectAndStartTest(2); }
       else if (t.includes('go back') || t.includes('home'))                                                          { commandFired = true; showSelector(); }
+      else if (t.includes('back') && current > 0)                                                                    { commandFired = true; prevMove(); }
       else if (t.includes('restart'))                                                                                 { commandFired = true; restartTest(); }
       else if (t.includes('repeat') && current >= 0)                                                                 { commandFired = true; replaySpeak(); }
       else if (t.includes('start') && current < 0 && selectedTest)                                                   { commandFired = true; startTest(); }
