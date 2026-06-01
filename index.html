@@ -574,7 +574,7 @@ function speakMovement(rawMarker, instruction, explicitParts) {
     const u1 = makeUtterance(markerText, 0.78);
     u1.onend = () => {
       setTimeout(() => {
-        const u2 = makeUtterance(instrText);
+        const u2 = makeUtterance(textForSpeech(instrText));
         u2.onend = () => {
           if (idx < pairs.length - 1) setTimeout(() => speakPair(idx + 1), 1500);
           else restartMic();
@@ -617,6 +617,14 @@ function markerForSpeech(m) {
     .toLowerCase()
     // Comma after each letter in "between x and y" so TTS pauses and reads them as letters not words
     .replace(/between (\w) and (\w)/g, 'between $1, and $2');
+}
+
+// Respell words the synthesizer mispronounces (spoken text only — display is unchanged).
+// "lead" (the gait) is read as the metal /lɛd/; respell to "leed" to force /liːd/.
+function textForSpeech(t) {
+  return t
+    .replace(/\bleads\b/gi, 'leeds')
+    .replace(/\blead\b/gi, 'leed');
 }
 
 // ── Test flow ───────��─────────────────────────────────────────────────────────
