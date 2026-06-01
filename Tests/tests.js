@@ -272,5 +272,104 @@ const LEVELS = [
         ]
       }
     ]
+  },
+  {
+    id: 'third',
+    name: 'Third Level',
+    tests: [
+      {
+        id: 'third1',
+        name: 'Third Level · Test 1',
+        detail: '22 movements · 370 pts',
+        pdf: 'Tests/2023ThirdLevel1-8.30.pdf',
+        purpose: 'Confirm that the horse demonstrates correct basics and has developed an uphill balance, sufficient impulsion and throughness to perform medium and extended gaits, half pass, and single flying changes. The horse should be reliably on the bit and show self-carriage.',
+        movements: [
+          { marker:"A / X",       text:"Enter collected trot. Halt, salute. Proceed collected trot.", parts:["Enter collected trot.", "Halt, salute. Proceed collected trot."], directive:"Engagement, uphill balance and quality of trot; well defined transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+          { marker:"C / S–V",     text:"Track left. Shoulder-in left.",                                                                            directive:"Angle, bend and balance; engagement and self-carriage." },
+          { marker:"V–L / L–H",   text:"Half circle left 10m. Half pass left.",                                                                    directive:"Shape and size of half circle; alignment, bend, fluency and crossing of legs; engagement and self-carriage." },
+          { marker:"R–P",         text:"Shoulder-in right.",                                                                                       directive:"Angle, bend and balance; engagement and self-carriage." },
+          { marker:"P–L / L–M",   text:"Half circle right 10m. Half pass right.",                                                                  directive:"Shape and size of half circle; alignment, bend, fluency and crossing of legs; engagement and self-carriage." },
+          { marker:"H–X–F / F",   text:"Medium trot. Collected trot.",                                                                             directive:"Moderate lengthening of frame and stride with engagement, elasticity, suspension, straightness and uphill balance; consistent tempo; well defined transitions." },
+          { marker:"A",           text:"Halt, rein back 4 steps. Proceed medium walk.",                                                            directive:"Immobility, willing steps back with correct rhythm and count; straightness; clear transitions." },
+          { marker:"K–R / R",     text:"Change rein, extended walk. Medium walk.",                                                                 directive:"Regularity; suppleness of back; activity; overtrack; freedom of shoulder; stretching to the bit; clear transitions." },
+          { marker:"M / Between G & H", text:"Turn left. Collect and half turn on the haunches left, then proceed medium walk.",                    directive:"Activity and quality of the preparation and execution; bend, balance, tempo, regularity, and fluency." },
+          { marker:"Between G & M / H", text:"Collect and half turn on the haunches right, then proceed medium walk. Track right.",                  directive:"Activity and quality of the preparation and execution; bend, balance, tempo, regularity, and fluency." },
+          { marker:"C",           text:"Collected canter right lead.",                                                                             directive:"Well defined transition; regularity and self-carriage; engagement and quality of canter." },
+          { marker:"M–F / F",     text:"Medium canter. Collected canter.",                                                                         directive:"Moderate lengthening of frame and stride with engagement, elasticity, suspension, straightness and uphill balance; consistent tempo; well defined transitions." },
+          { marker:"V",           text:"Circle right 10m.",                                                                                        directive:"Shape and size of circle; bend; engagement and self-carriage." },
+          { marker:"V–R",         text:"Change rein, flying change of lead between the centerline and R.",                                         directive:"Clear, balanced, fluent, straight flying change; engagement and self-carriage." },
+          { marker:"H–K / K",     text:"Extended canter. Collected canter.",                                                                       directive:"Utmost ground cover with lengthening of frame; elasticity; engagement; suspension; straightness and uphill balance." },
+          { marker:"K–A–P",       text:"Collected canter.",                                                                                        directive:"Transitions at H and K. Well defined maintaining tempo and balance." },
+          { marker:"P",           text:"Circle left 10m.",                                                                                         directive:"Shape and size of circle; bend; engagement and self-carriage." },
+          { marker:"P–S",         text:"Change rein, flying change of lead between the centerline and S.",                                         directive:"Clear, balanced, fluent, straight flying change; engagement and self-carriage." },
+          { marker:"C",           text:"Collected trot.",                                                                                          directive:"Well defined, balanced transition; engagement and collection." },
+          { marker:"M–X–K / K",   text:"Extended trot. Collected trot.",                                                                           directive:"Utmost ground cover with lengthening of frame; elasticity; engagement; suspension; straightness and uphill balance." },
+          { marker:"K–A",         text:"Collected trot.",                                                                                          directive:"Transitions at M and K. Well defined maintaining tempo and balance." },
+          { marker:"A / X",       text:"Down centerline. Halt, salute.",                                                                           directive:"Bend and balance in turn; engagement, self-carriage and quality of trot; well defined transition; straightness; attentiveness; immobility (min. 3 sec). Leave arena at A in free walk." }
+        ]
+      },
+      {
+        id: 'third2',
+        name: 'Third Level · Test 2',
+        detail: '21 movements · 380 pts',
+        pdf: 'Tests/2023ThirdLevel2-4.20.pdf',
+        purpose: 'Confirm uphill balance, impulsion and throughness to perform medium and extended gaits, half pass, renvers, and single flying changes, with self-carriage and reliably on the bit.',
+        movements: [
+          { marker:"A / X",         text:"Enter collected trot. Halt, salute. Proceed collected trot.", parts:["Enter collected trot.", "Halt, salute. Proceed collected trot."], directive:"Engagement, self-carriage and quality of trot; well defined transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+          { marker:"C / M–X–K / K", text:"Track right. Change rein, medium trot. Collected trot.",                                                 directive:"Moderate lengthening of frame and stride with engagement, elasticity, suspension, straightness and uphill balance; consistent tempo; well defined transitions." },
+          { marker:"F–B",           text:"Shoulder-in left.",                                                                                      directive:"Angle, bend and balance; engagement and self-carriage." },
+          { marker:"B–M",           text:"Renvers right.",                                                                                         directive:"Angle, bend and balance; engagement and self-carriage." },
+          { marker:"H–X–F / F",     text:"Change rein, extended trot. Collected trot.",                                                            directive:"Utmost ground cover with lengthening of frame; elasticity; engagement; suspension; straightness and uphill balance." },
+          { marker:"F–A–K",         text:"Collected trot.",                                                                                        directive:"Transitions at H and F. Well defined maintaining tempo and balance." },
+          { marker:"K–E",           text:"Shoulder-in right.",                                                                                     directive:"Angle, bend and balance; engagement and self-carriage." },
+          { marker:"E–H",           text:"Renvers left.",                                                                                          directive:"Angle, bend and balance; engagement and self-carriage." },
+          { marker:"C / M / Between G & H", text:"Medium walk. Turn right. Collect and half turn on the haunches right, then proceed medium walk.", directive:"Activity and quality of the preparation and execution; bend, balance, tempo, regularity, and fluency." },
+          { marker:"Between G & M / H", text:"Collect and half turn on the haunches left, then proceed medium walk. Turn left.",                    directive:"Activity and quality of the preparation and execution; bend, balance, tempo, regularity, and fluency." },
+          { marker:"S–P / P",       text:"Change rein, extended walk. Medium walk.",                                                               directive:"Regularity; suppleness of back; activity; overtrack; freedom of shoulder; stretching to the bit; well-defined transitions." },
+          { marker:"F",             text:"Collected canter right lead.",                                                                           directive:"Well defined transition; regularity and self-carriage; engagement and quality of gait." },
+          { marker:"A / D–R",       text:"Down centerline. Half pass right.",                                                                      directive:"Alignment and bend while moving fluently forward and sideways; engagement and self-carriage." },
+          { marker:"Between R & M", text:"Flying change of lead.",                                                                                 directive:"Clear, balanced, fluent, straight flying change; engagement and self-carriage." },
+          { marker:"H–K / K",       text:"Medium canter. Collected canter.",                                                                       directive:"Moderate lengthening of frame and stride with engagement; elasticity; suspension; straightness and uphill balance; consistent tempo; well defined transitions." },
+          { marker:"A / D–S",       text:"Down centerline. Half pass left.",                                                                       directive:"Alignment and bend while moving fluently forward and sideways; engagement and self-carriage." },
+          { marker:"Between S & H", text:"Flying change of lead.",                                                                                 directive:"Clear, balanced, fluent, straight flying change; engagement and self-carriage." },
+          { marker:"C",             text:"Circle right 20m, showing a clear release of both reins for 4-5 strides over the centerline.",           directive:"Clear release of reins maintaining self-carriage; engagement and collection; size of circle and bend." },
+          { marker:"M–F / F",       text:"Extended canter. Collected canter.",                                                                     directive:"Utmost ground cover with lengthening of frame; elasticity; engagement; suspension; straightness and uphill balance." },
+          { marker:"F–A",           text:"Collected canter.",                                                                                      directive:"Transitions at M and F. Well defined maintaining tempo and balance." },
+          { marker:"A / L / I",     text:"Down centerline. Collected trot. Halt, salute.",                                                         directive:"Bend and balance in turn; engagement, self-carriage and quality of gaits; well defined transition; straightness; attentiveness; immobility (min. 3 sec). Leave arena at A in free walk." }
+        ]
+      },
+      {
+        id: 'third3',
+        name: 'Third Level · Test 3',
+        detail: '23 movements · 400 pts',
+        pdf: 'Tests/2023ThirdLevel3.pdf',
+        purpose: 'Confirm uphill balance, impulsion and throughness to perform medium and extended gaits, half pass, and single flying changes near the centerline, with self-carriage and reliably on the bit.',
+        movements: [
+          { marker:"A / X",         text:"Enter collected trot. Halt, salute. Proceed collected trot.", parts:["Enter collected trot.", "Halt, salute. Proceed collected trot."], directive:"Engagement, self-carriage and quality of trot; well defined transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+          { marker:"C / H–X–F / F", text:"Track left. Change rein, medium trot. Collected trot.",                                                  directive:"Moderate lengthening of frame and stride with engagement, elasticity, suspension, straightness and uphill balance; consistent tempo; well defined transitions." },
+          { marker:"K–E",           text:"Shoulder-in right.",                                                                                     directive:"Angle, bend and balance; engagement and self-carriage." },
+          { marker:"E–X / X–B",     text:"Half circle right 10m. Half circle left 10m.",                                                           directive:"Shape and size of half circles; supple change of bend on centerline; engagement and self-carriage." },
+          { marker:"B–G / C",       text:"Half pass left. Track right.",                                                                           directive:"Alignment, bend, fluency and crossing of legs; engagement and self-carriage." },
+          { marker:"M–X–K / K",     text:"Change rein, extended trot. Collected trot.",                                                            directive:"Utmost ground cover with lengthening of frame; elasticity; engagement; suspension; straightness and uphill balance." },
+          { marker:"K–A",           text:"Collected trot.",                                                                                        directive:"Transitions at M and K. Well defined maintaining tempo and balance." },
+          { marker:"A",             text:"Halt, rein back 4 steps. Proceed collected trot.",                                                       directive:"Immobility, willing steps back with correct rhythm and count; straightness; well defined transitions." },
+          { marker:"F–B",           text:"Shoulder-in left.",                                                                                      directive:"Angle, bend and balance; engagement and self-carriage." },
+          { marker:"B–X / X–E",     text:"Half circle left 10m. Half circle right 10m.",                                                           directive:"Shape and size of half circles; supple change of bend on centerline; engagement and self-carriage." },
+          { marker:"E–G / C",       text:"Half pass right. Track left.",                                                                           directive:"Alignment, bend, fluency and crossing of legs; engagement and self-carriage." },
+          { marker:"Between C & H / H / Between G & M", text:"Medium walk. Turn left. Collect and half turn on the haunches left, then proceed medium walk.", directive:"Activity and quality of the preparation and execution; bend, balance, tempo, regularity, and fluency." },
+          { marker:"Between G & H / M", text:"Collect and half turn on the haunches right, then proceed medium walk. Turn right.",                  directive:"Activity and quality of the preparation and execution; bend, balance, tempo, regularity, and fluency." },
+          { marker:"R–V / V",       text:"Change rein, extended walk. Medium walk.",                                                               directive:"Regularity; suppleness of back; activity; overtrack; freedom of shoulders; stretching to the bit; well defined transitions." },
+          { marker:"K",             text:"Collected canter left lead.",                                                                            directive:"Well defined transition; regularity and self-carriage; engagement and quality of canter." },
+          { marker:"F–X / X–I",     text:"Half pass left. Collected canter.",                                                                      directive:"Alignment and bend while moving fluently forward and sideways; engagement and self-carriage." },
+          { marker:"I–S / S–F",     text:"Half circle left 10m. Change rein, flying change of lead near the centerline.",                          directive:"Shape and size of half circle; bend; clear, balanced, fluent, straight flying change; engagement and self-carriage." },
+          { marker:"K–X / X–I",     text:"Half pass right. Collected canter.",                                                                     directive:"Alignment and bend while moving fluently forward and sideways; engagement and self-carriage." },
+          { marker:"I–R / R–K",     text:"Half circle right 10m. Change rein, flying change of lead near the centerline.",                         directive:"Shape and size of half circle; bend; clear, balanced, fluent, straight flying change; engagement and self-carriage." },
+          { marker:"F–M / M",       text:"Extended canter. Collected canter.",                                                                     directive:"Utmost ground cover with lengthening of frame; elasticity; engagement; suspension; straightness and uphill balance." },
+          { marker:"M–C–H",         text:"Collected canter.",                                                                                      directive:"Transitions at F and M. Well defined maintaining tempo and balance." },
+          { marker:"H",             text:"Collected trot.",                                                                                        directive:"Well defined, balanced transition; engagement and collection." },
+          { marker:"E / X / G",     text:"Turn left. Turn left. Halt, salute.",                                                                    directive:"Bend and balance in turns; engagement, self-carriage and quality of trot; well defined transition; straightness; attentiveness; immobility (min. 3 sec). Leave arena at A in free walk." }
+        ]
+      }
+    ]
   }
 ];
