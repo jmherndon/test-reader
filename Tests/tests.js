@@ -79,5 +79,94 @@ const LEVELS = [
         ]
       }
     ]
+  },
+  {
+    id: 'first',
+    name: 'First Level',
+    tests: [
+      {
+        id: 'first1',
+        name: 'First Level · Test 1',
+        detail: '15 movements · 270 pts',
+        pdf: 'Tests/2023FirstLevel1-4.12.pdf',
+        purpose: 'In addition to Training Level requirements, confirm improved balance, lateral suppleness and throughness, and the thrust to perform lengthenings of stride. The horse should be on the bit. Includes 10m half circle at trot, 15m circle in canter, and lengthening of stride in trot.',
+        movements: [
+          { marker:"A / X",     text:"Enter working trot. Halt, salute. Proceed working trot.", parts:["Enter working trot.", "Halt, salute. Proceed working trot."], directive:"Regularity and quality of trot; willing, clear transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+          { marker:"C / E–X",   text:"Track left. Half circle left 10m, returning to track at H.",                                                directive:"Regularity and quality of trot; shape and size of half circle; bend; balance; straightness." },
+          { marker:"B–X",       text:"Half circle right 10m, returning to track at M.",                                                           directive:"Regularity and quality of trot; shape and size of half circle; bend; balance; straightness." },
+          { marker:"C",         text:"Circle left 20m in rising trot, allowing the horse to stretch forward and downward while maintaining contact. Before C, shorten the reins. Working trot.", directive:"Forward and downward stretch over the back into a light contact, maintaining balance and quality of trot; bend; shape and size of circle; willing, clear transitions." },
+          { marker:"H–P / P",   text:"Change rein, lengthen stride in trot. Working trot.",                                                       directive:"Moderate lengthening of frame and stride; regularity and quality of trot; straightness; consistent tempo; willing, clear transitions; bend and balance in corner." },
+          { marker:"A",         text:"Medium walk.",                                                                                              directive:"Willing, clear transition; regularity, quality, overtrack; bend and balance in corner; straightness." },
+          { marker:"V–R / R",   text:"Change rein, free walk. Medium walk.",                                                                      directive:"Regularity and quality of walks; reach and ground cover with overtrack of free walk allowing complete freedom to stretch the neck forward and downward; straightness; willing, clear transitions." },
+          { marker:"M / C",     text:"Working trot. Working canter left lead.",                                                                   directive:"Willing, clear transitions; regularity and quality of gaits; bend and balance in corners." },
+          { marker:"E",         text:"Circle left 15m.",                                                                                          directive:"Regularity and quality of canter; shape and size of circle; bend; balance." },
+          { marker:"F–X–H / X", text:"Change rein. Working trot.",                                                                               directive:"Willing, clear transition; regularity and quality of gaits; straightness; bend and balance in corner." },
+          { marker:"C",         text:"Working canter right lead.",                                                                                directive:"Willing, clear transition; regularity and quality of canter; bend and balance in corner." },
+          { marker:"B",         text:"Circle right 15m.",                                                                                         directive:"Regularity and quality of canter; shape and size of circle; bend; balance." },
+          { marker:"A",         text:"Working trot.",                                                                                             directive:"Willing, clear transition; regularity and quality of trot; straightness; bend and balance in corner." },
+          { marker:"K–R / R",   text:"Change rein, lengthen stride in trot. Working trot.",                                                       directive:"Moderate lengthening of frame and stride; regularity and quality of trot; straightness; consistent tempo; willing, clear transitions; bend and balance in corners." },
+          { marker:"E / X / G", text:"Half circle left 10m. Down centerline. Halt, salute.",                                                      directive:"Bend and balance in half circle; regularity and quality of trot; willing, clear transition; straightness; attentiveness; immobility (min. 3 sec). Leave arena at A in free walk." }
+        ]
+      },
+      {
+        id: 'first2',
+        name: 'First Level · Test 2',
+        detail: '19 movements · 330 pts',
+        pdf: 'Tests/2023FirstLevel2-8.30.pdf',
+        purpose: 'In addition to Training Level requirements, confirm improved balance, lateral suppleness and throughness, and the thrust to perform lengthenings of stride. The horse should be on the bit. Introduces leg yield and lengthen stride in canter.',
+        movements: [
+          { marker:"A / X",       text:"Enter working trot. Halt, salute. Proceed working trot.", parts:["Enter working trot.", "Halt, salute. Proceed working trot."], directive:"Regularity and quality of trot; willing, clear transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+          { marker:"C / M–V / V", text:"Track right. Change rein, lengthen stride in trot. Working trot.",                                          directive:"Bend and balance in turns; moderate lengthening of frame and stride; regularity and quality of trot; willing, clear transitions; straightness; consistent tempo." },
+          { marker:"A / L–M",     text:"Turn down centerline. Leg yield right.",                                                                   directive:"Regularity and quality of trot; straightness on centerline; consistent tempo; alignment; balance and flow." },
+          { marker:"H–P / P",     text:"Change rein, lengthen stride in trot. Working trot.",                                                       directive:"Moderate lengthening of frame and stride; regularity and quality of trot; willing, clear transitions; straightness; consistent tempo." },
+          { marker:"A / L–H",     text:"Turn down centerline. Leg yield left.",                                                                    directive:"Regularity and quality of trot; straightness on centerline; consistent tempo; alignment; balance and flow." },
+          { marker:"C",           text:"Medium walk.",                                                                                             directive:"Willing, clear transition; regularity, quality, overtrack; bend and balance in corner." },
+          { marker:"M–V / V",     text:"Change rein, free walk. Medium walk.",                                                                     directive:"Regularity and quality of walks; reach and ground cover with overtrack of free walk allowing complete freedom to stretch the neck forward and downward; straightness; willing, clear transitions." },
+          { marker:"K / A",       text:"Working trot. Working canter left lead.",                                                                  directive:"Willing, clear transitions; regularity and quality of gaits; bend and balance in corners." },
+          { marker:"P",           text:"Circle left 15m.",                                                                                         directive:"Regularity and quality of canter; shape and size of circle; bend; balance." },
+          { marker:"P–M",         text:"Lengthen stride in canter.",                                                                               directive:"Willing, clear transition; moderate lengthening of frame and stride; regularity and quality of canter; straightness; consistent tempo." },
+          { marker:"Between M & C", text:"Develop working canter.",                                                                                directive:"Willing, clear transition; regularity and quality of canter; bend and balance in corners." },
+          { marker:"H–X–F / X",   text:"Change rein. Working trot.",                                                                              directive:"Willing, clear transition; regularity and quality of gaits; straightness." },
+          { marker:"F",           text:"Working canter right lead.",                                                                               directive:"Willing, clear transition; regularity and quality of canter; bend and balance in corners." },
+          { marker:"V",           text:"Circle right 15m.",                                                                                        directive:"Regularity and quality of canter; shape and size of circle; bend; balance." },
+          { marker:"V–H",         text:"Lengthen stride in canter.",                                                                               directive:"Willing, clear transition; moderate lengthening of frame and stride; regularity and quality of canter; straightness; consistent tempo." },
+          { marker:"Between H & C", text:"Develop working canter.",                                                                                directive:"Willing, clear transition; regularity and quality of canter; bend and balance in corners." },
+          { marker:"M",           text:"Working trot.",                                                                                            directive:"Willing, clear transition; regularity and quality of trot; straightness." },
+          { marker:"B",           text:"Circle right 20m in rising trot, allowing the horse to stretch forward and downward while maintaining contact. Before B, shorten the reins. Working trot.", directive:"Forward and downward stretch over the back into a light contact, maintaining balance and quality of trot; bend; shape and size of circle; willing, clear transitions." },
+          { marker:"A / X",       text:"Down centerline. Halt, salute.",                                                                          directive:"Bend and balance in turn; regularity and quality of trot; willing, clear transition; straightness; attentiveness; immobility (min. 3 sec). Leave arena at A in free walk." }
+        ]
+      },
+      {
+        id: 'first3',
+        name: 'First Level · Test 3',
+        detail: '22 movements · 360 pts',
+        pdf: 'Tests/2023FirstLevel3-10.4.pdf',
+        purpose: 'In addition to Training Level requirements, confirm improved balance, lateral suppleness and throughness, and the thrust to perform lengthenings of stride. The horse should be on the bit. Introduces 10m circle at trot, change of lead through trot, and shallow loops at canter.',
+        movements: [
+          { marker:"A / X",       text:"Enter working trot. Halt, salute. Proceed working trot.", parts:["Enter working trot.", "Halt, salute. Proceed working trot."], directive:"Regularity and quality of trot; willing, clear transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+          { marker:"C / H–X–F / F", text:"Track left. Change rein, lengthen stride in trot. Working trot.",                                         directive:"Bend and balance in turn; moderate lengthening of frame and stride; regularity and quality of trot; willing, clear transitions; straightness; consistent tempo." },
+          { marker:"V–I",         text:"Leg yield right.",                                                                                         directive:"Regularity and quality of trot; consistent tempo; alignment; balance and flow." },
+          { marker:"I / I / C",   text:"Circle left 10m. Straight ahead. Track right.",                                                            directive:"Regularity and quality of trot; shape and size of circle; bend; balance; straightness on centerline." },
+          { marker:"B",           text:"Circle right 20m in rising trot, allowing the horse to stretch forward and downward while maintaining contact. Before B, shorten the reins.", directive:"Forward and downward stretch over the back into a light contact, maintaining balance and quality of trot; bend; shape and size of circle; willing, clear transitions." },
+          { marker:"A",           text:"Working canter right lead.",                                                                               directive:"Willing, clear transition; regularity and quality of canter; bend and balance in corner." },
+          { marker:"K–X–H",       text:"Slightly after K, begin a single loop to X returning to the track slightly before H, maintaining lead.",   directive:"Regularity and quality of canter; shape and size of loop; positioning; balance." },
+          { marker:"C",           text:"Circle right 15m.",                                                                                        directive:"Regularity and quality of canter; shape and size of circle; bend; balance." },
+          { marker:"M–F / F",     text:"Lengthen stride in canter. Working canter.",                                                               directive:"Moderate lengthening of frame and stride; regularity and quality of canter; willing, clear transitions; straightness; consistent tempo." },
+          { marker:"K–X–M / X",   text:"Change rein. Working trot.",                                                                              directive:"Willing, calm transition; regularity and quality of gaits; bend and balance in corner." },
+          { marker:"C",           text:"Medium walk.",                                                                                             directive:"Willing, clear transition; regularity, quality, overtrack." },
+          { marker:"H–X–K / K",   text:"Free walk. Medium walk.",                                                                                 directive:"Regularity and quality of walks; reach and ground cover with overtrack of free walk allowing complete freedom to stretch the neck forward and downward; straightness; willing, clear transitions." },
+          { marker:"A",           text:"Working trot.",                                                                                            directive:"Willing, calm transition; bend and balance in corner." },
+          { marker:"P–I",         text:"Leg yield left.",                                                                                          directive:"Regularity and quality of trot; consistent tempo; alignment; balance and flow." },
+          { marker:"I / I / C",   text:"Circle right 10m. Straight ahead. Track right.",                                                           directive:"Regularity and quality of trot; shape and size of circle; bend; balance." },
+          { marker:"M–X–K / K",   text:"Lengthen stride in trot. Working trot.",                                                                  directive:"Moderate lengthening of frame and stride; regularity and quality of trot; willing, clear transitions; straightness; consistent tempo." },
+          { marker:"A",           text:"Working canter left lead.",                                                                                directive:"Willing, calm transition; regularity and quality of gait; bend and balance in corner." },
+          { marker:"F–X–M",       text:"Slightly after F, begin a single loop to X returning to the track slightly before M, maintaining lead.",   directive:"Regularity and quality of canter; shape and size of loop; positioning; balance." },
+          { marker:"C",           text:"Circle left 15m.",                                                                                         directive:"Regularity and quality of canter; shape and size of circle; bend; balance." },
+          { marker:"H–K / K",     text:"Lengthen stride in canter. Working canter.",                                                               directive:"Moderate lengthening of frame and stride; regularity and quality of canter; willing, clear transitions; straightness; consistent tempo." },
+          { marker:"F–X–H / X",   text:"Change rein. Change of lead through trot.",                                                               directive:"Willing, clear transitions; regularity and quality of gaits; straightness." },
+          { marker:"C / B / X / G", text:"Working trot. Half circle right 10m. Down centerline. Halt, salute.",                                    directive:"Bend and balance in corner and half circle; regularity and quality of trot; willing, clear transition; straightness; attentiveness; immobility (min. 3 sec). Leave arena at A in free walk." }
+        ]
+      }
+    ]
   }
 ];
