@@ -1,8 +1,9 @@
-const CACHE = 'dressage-reader-v1';
+const CACHE = 'dressage-reader-v2';
 const ASSETS = [
   '/',
   '/index.html',
   '/manifest.json',
+  '/Tests/tests.js',
   'https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300&family=DM+Mono:wght@300;400&display=swap'
 ];
 
