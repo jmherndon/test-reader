@@ -60,11 +60,14 @@
   }
   .selector-title { font-size: 1.1rem; font-weight: 600; color: var(--sand); letter-spacing: 0.02em; }
   .selector-subtitle { font-size: 0.72rem; font-family: 'DM Mono', monospace; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; }
-  .level-tabs { display: flex; gap: 0.4rem; padding: 0.75rem 1.5rem 0; overflow-x: auto; flex-shrink: 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-  .level-tabs::-webkit-scrollbar { display: none; }
-  .level-tab { white-space: nowrap; padding: 0.4rem 0.85rem; background: transparent; border: 0.5px solid rgba(200,151,42,0.3); border-radius: 20px; color: var(--text-light); font-family: 'DM Mono', monospace; font-size: 0.72rem; letter-spacing: 0.04em; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background 0.15s, color 0.15s; }
-  .level-tab.active { background: var(--gold); color: var(--arena); border-color: var(--gold); }
-  .selector-list { display: flex; flex-direction: column; gap: 0.75rem; padding: 1rem 1.5rem; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+  .selector-accordion { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.85rem 1.25rem 1rem; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
+  .acc-item { border: 0.5px solid rgba(228,180,65,0.3); border-radius: 12px; overflow: hidden; flex-shrink: 0; }
+  .acc-header { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0.95rem 1.1rem; background: rgba(228,180,65,0.07); color: var(--sand); font-family: 'Crimson Pro', Georgia, serif; font-size: 1.1rem; font-weight: 600; letter-spacing: 0.01em; cursor: pointer; border: none; -webkit-tap-highlight-color: transparent; transition: background 0.15s, color 0.15s; }
+  .acc-item.open .acc-header { background: var(--gold); color: var(--arena); }
+  .acc-chevron { font-family: 'DM Mono', monospace; font-size: 0.8rem; opacity: 0.8; transition: transform 0.2s; }
+  .acc-item.open .acc-chevron { transform: rotate(90deg); }
+  .acc-body { display: none; flex-direction: column; gap: 0.6rem; padding: 0.6rem; }
+  .acc-item.open .acc-body { display: flex; }
   .test-card {
     width: 100%;
     padding: 1.1rem 1.4rem;
@@ -220,8 +223,7 @@
     <div class="selector-title">Dressage Test Reader</div>
     <div class="selector-subtitle">USEF 2023</div>
   </div>
-  <div class="level-tabs" id="level-tabs"></div>
-  <div class="selector-list" id="selector-list"></div>
+  <div class="selector-accordion" id="selector-accordion"></div>
 </div>
 
 <!-- Review screen (overlay) -->
@@ -407,55 +409,56 @@ const PDF_ICON = '<svg viewBox="0 0 18 22" width="20" height="24" fill="currentC
 const savedLevel = parseInt(localStorage.getItem('dtr-level'), 10);
 if (!isNaN(savedLevel) && savedLevel >= 0 && savedLevel < LEVELS.length) currentLevel = savedLevel;
 
-function renderLevelTabs() {
-  const tabs = document.getElementById('level-tabs');
-  tabs.innerHTML = '';
-  LEVELS.forEach((lvl, i) => {
-    const tab = document.createElement('button');
-    tab.className = 'level-tab' + (i === currentLevel ? ' active' : '');
-    tab.textContent = lvl.name;
-    tab.onclick = () => selectLevel(i);
-    tabs.appendChild(tab);
+function renderAccordion() {
+  const root = document.getElementById('selector-accordion');
+  root.innerHTML = '';
+  LEVELS.forEach((lvl, li) => {
+    const item = document.createElement('div');
+    item.className = 'acc-item' + (li === currentLevel ? ' open' : '');
+
+    const header = document.createElement('button');
+    header.className = 'acc-header';
+    header.innerHTML = '<span>' + lvl.name + '</span><span class="acc-chevron">▶</span>';
+    header.onclick = () => toggleLevel(li);
+    item.appendChild(header);
+
+    const body = document.createElement('div');
+    body.className = 'acc-body';
+    lvl.tests.forEach((t, ti) => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position:relative';
+
+      const btn = document.createElement('button');
+      btn.className = 'test-card';
+      btn.innerHTML = '<div class="test-card-name">' + t.name + '</div><div class="test-card-detail">' + t.detail + '</div>';
+      btn.onclick = () => selectTest(li, ti);
+
+      if (t.pdf) {
+        const pdfBtn = document.createElement('a');
+        pdfBtn.href = t.pdf;
+        pdfBtn.target = '_blank';
+        pdfBtn.rel = 'noopener';
+        pdfBtn.style.cssText = 'position:absolute;top:50%;right:0.9rem;transform:translateY(-50%);color:var(--gold-light);text-decoration:none;line-height:1;opacity:0.9;';
+        pdfBtn.innerHTML = PDF_ICON;
+        pdfBtn.onclick = (e) => e.stopPropagation();
+        wrap.appendChild(pdfBtn);
+      }
+
+      wrap.appendChild(btn);
+      body.appendChild(wrap);
+    });
+    item.appendChild(body);
+    root.appendChild(item);
   });
 }
 
-function selectLevel(idx) {
-  currentLevel = idx;
-  localStorage.setItem('dtr-level', idx);
-  renderLevelTabs();
-  renderTestList();
+function toggleLevel(idx) {
+  currentLevel = (currentLevel === idx) ? -1 : idx;
+  if (currentLevel >= 0) localStorage.setItem('dtr-level', currentLevel);
+  renderAccordion();
 }
 
-function renderTestList() {
-  const selectorList = document.getElementById('selector-list');
-  selectorList.innerHTML = '';
-  LEVELS[currentLevel].tests.forEach((t, i) => {
-    const wrap = document.createElement('div');
-    wrap.style.cssText = 'position:relative';
-
-    const btn = document.createElement('button');
-    btn.className = 'test-card';
-    btn.innerHTML = '<div class="test-card-name">' + t.name + '</div><div class="test-card-detail">' + t.detail + '</div>';
-    btn.onclick = () => selectTest(i);
-
-    if (t.pdf) {
-      const pdfBtn = document.createElement('a');
-      pdfBtn.href = t.pdf;
-      pdfBtn.target = '_blank';
-      pdfBtn.rel = 'noopener';
-      pdfBtn.style.cssText = 'position:absolute;top:50%;right:0.9rem;transform:translateY(-50%);color:var(--gold);text-decoration:none;line-height:1;opacity:0.9;';
-      pdfBtn.innerHTML = PDF_ICON;
-      pdfBtn.onclick = (e) => e.stopPropagation();
-      wrap.appendChild(pdfBtn);
-    }
-
-    wrap.appendChild(btn);
-    selectorList.appendChild(wrap);
-  });
-}
-
-renderLevelTabs();
-renderTestList();
+renderAccordion();
 
 function showSelector() {
   if (micActive) { recognition && recognition.stop(); micActive = false; }
@@ -472,8 +475,8 @@ function showSelector() {
   updateVoiceStatus();
 }
 
-function selectTest(idx) {
-  selectedTest = LEVELS[currentLevel].tests[idx];
+function selectTest(levelIdx, testIdx) {
+  selectedTest = LEVELS[levelIdx].tests[testIdx];
   document.getElementById('selector-screen').classList.add('hidden');
   document.getElementById('header-title').textContent = selectedTest.name;
   buildReview();
