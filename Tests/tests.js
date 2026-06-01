@@ -168,5 +168,41 @@ const LEVELS = [
         ]
       }
     ]
+  },
+  {
+    id: 'second',
+    name: 'Second Level',
+    tests: [
+      {
+        id: 'second1',
+        name: 'Second Level · Test 1',
+        detail: '21 movements · 350 pts',
+        pdf: 'Tests/2023SecondLevel1-8.30.pdf',
+        purpose: 'Confirm that the horse, having developed thrust and improved balance, accepts more weight on the hindquarters (collection), moves with a greater degree of straightness and bend, and is reliably on the bit. Introduces shoulder-in, rein back, counter canter, and medium gaits.',
+        movements: [
+          { marker:"A / X",         text:"Enter collected trot. Halt, salute. Proceed collected trot.", parts:["Enter collected trot.", "Halt, salute. Proceed collected trot."], directive:"Engagement, uphill balance and quality of trot; clear, balanced transitions; straightness; attentiveness; immobility (min. 3 sec)." },
+          { marker:"C / H–P / P",   text:"Track left. Change rein, medium trot. Collected trot.",                                                    directive:"Bend and balance in turns; moderate lengthening of frame and stride with engagement, elasticity, suspension, straightness and uphill balance." },
+          { marker:"P–F–A–K",       text:"Collected trot.",                                                                                          directive:"Transitions at H and P. Clear, balanced transitions; consistent tempo; quality of trot." },
+          { marker:"K–E / E",       text:"Shoulder-in right. Turn right.",                                                                           directive:"Angle, bend and balance; engagement and quality of trot." },
+          { marker:"B / B–M",       text:"Turn left. Shoulder-in left.",                                                                             directive:"Angle, bend and balance; engagement and quality of trot." },
+          { marker:"C",             text:"Halt, rein back 3 to 4 steps. Proceed medium walk.",                                                       directive:"Immobility; willing steps back with correct rhythm and count; straightness; clear transitions." },
+          { marker:"C–S",           text:"Medium walk.",                                                                                             directive:"Regularity, quality, overtrack." },
+          { marker:"S–F / F",       text:"Change rein, free walk. Medium walk.",                                                                     directive:"Regularity, overtrack, and quality of walks; reach and ground cover of free walk allowing complete freedom to stretch the neck forward and downward; straightness; clear, balanced transitions." },
+          { marker:"A",             text:"Collected canter right lead.",                                                                             directive:"Clear, balanced straight transition; regularity and quality of canter." },
+          { marker:"K–S / S",       text:"Medium canter. Collected canter.",                                                                         directive:"Moderate lengthening of frame and stride with engagement, elasticity, suspension, straightness and uphill balance; consistent tempo; clear balanced transitions." },
+          { marker:"C",             text:"Circle right 10m.",                                                                                        directive:"Regularity and quality of canter; shape and size of circle; bend; balance." },
+          { marker:"M–E / E–V",     text:"Change rein. Counter canter.",                                                                            directive:"Regularity, quality and balance of canter; straightness." },
+          { marker:"V / K",         text:"Collected trot. Medium walk.",                                                                             directive:"Regularity and quality of gaits; clear, balanced transitions." },
+          { marker:"A",             text:"Collected canter left lead.",                                                                              directive:"Clear, balanced straight transition; regularity and quality of gaits." },
+          { marker:"F–R / R",       text:"Medium canter. Collected canter.",                                                                         directive:"Moderate lengthening of frame and stride with engagement, elasticity, suspension, straightness and uphill balance; consistent tempo; clear balanced transitions." },
+          { marker:"C",             text:"Circle left 10m.",                                                                                         directive:"Regularity and quality of canter; shape and size of circle; bend; balance." },
+          { marker:"H–B / B–P",     text:"Change rein. Counter canter.",                                                                            directive:"Regularity, quality and balance of canter; straightness." },
+          { marker:"P",             text:"Collected trot.",                                                                                          directive:"Regularity and quality of gaits; clear, balanced transition." },
+          { marker:"K–R / R",       text:"Medium trot. Collected trot.",                                                                             directive:"Moderate lengthening of frame and stride with engagement, elasticity, suspension, straightness and uphill balance." },
+          { marker:"R–M–C–H–S",     text:"Collected trot.",                                                                                          directive:"Transitions at K and R. Clear, balanced transitions; consistent tempo." },
+          { marker:"S / I / G",     text:"Turn left. Turn left. Halt, salute.",                                                                      directive:"Bend and balance in turns; engagement, uphill balance and quality of trot; clear, balanced transition; straightness; attentiveness; immobility (min. 3 sec). Leave arena at A in free walk." }
+        ]
+      }
+    ]
   }
 ];
