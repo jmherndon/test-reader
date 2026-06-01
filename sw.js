@@ -1,4 +1,4 @@
-const CACHE = 'dressage-reader-v2';
+const CACHE = 'dressage-reader-v3';
 const ASSETS = [
   '/',
   '/index.html',
@@ -21,8 +21,16 @@ self.addEventListener('activate', e => {
   );
 });
 
+// Network-first: always try the network so updates show immediately when online;
+// fall back to cache (and to index.html for navigations) when offline.
 self.addEventListener('fetch', e => {
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request).catch(() => caches.match('/index.html')))
+    fetch(e.request)
+      .then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy)).catch(() => {});
+        return res;
+      })
+      .catch(() => caches.match(e.request).then(cached => cached || caches.match('/index.html')))
   );
 });
