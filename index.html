@@ -104,12 +104,12 @@
   .movement-card { background: var(--white); color: var(--text); border-radius: 16px; padding: 1.25rem 1.25rem 1rem; display: none; flex-direction: column; gap: 0.6rem; flex-shrink: 0; }
   .movement-card.active { display: flex; }
   .move-header { display: flex; align-items: center; gap: 10px; }
-  .move-badge { background: var(--arena); color: #FBD971; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.06em; white-space: nowrap; }
+  .move-badge { background: #2C2416; color: #FBD971; font-family: 'DM Mono', monospace; font-size: 0.75rem; padding: 4px 10px; border-radius: 20px; letter-spacing: 0.06em; white-space: nowrap; }
   .move-number { font-family: 'DM Mono', monospace; font-size: 0.7rem; color: var(--text-light); letter-spacing: 0.08em; }
   .move-instruction { font-size: 1.35rem; font-weight: 600; line-height: 1.35; color: var(--text); }
   .move-parts { display: flex; flex-direction: column; gap: 0.6rem; }
   .move-part { display: flex; gap: 0.6rem; align-items: baseline; }
-  .move-part-marker { background: var(--arena); color: #FBD971; font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; }
+  .move-part-marker { background: #2C2416; color: #FBD971; font-family: 'DM Mono', monospace; font-size: 0.72rem; padding: 3px 9px; border-radius: 20px; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; }
   .move-part-text { font-size: 1.2rem; font-weight: 600; line-height: 1.35; color: var(--text); }
   .move-directive { font-size: 0.9rem; color: var(--text-mid); font-style: italic; line-height: 1.5; border-top: 0.5px solid #E8E0D0; padding-top: 0.6rem; }
   /* Arena diagram */
@@ -151,6 +151,37 @@
   .voice-dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); margin-right: 5px; vertical-align: middle; animation: pulse 1.2s ease-in-out infinite; }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.2; } }
   .hidden { display: none !important; }
+
+  /* ── Daylight theme (high contrast for sunlight) ── */
+  body.day {
+    --sand: #1A1410;
+    --sand-dark: #2A2018;
+    --arena: #FBF8F0;
+    --arena-mid: #ECE4D2;
+    --gold: #8A5A00;
+    --gold-light: #6E4600;
+    --text-light: #4A3E28;
+    background: #FBF8F0;
+    color: #1A1410;
+  }
+  body.day .header, body.day .selector-header { border-bottom-color: rgba(120,80,0,0.35); }
+  body.day .counter { background: rgba(120,80,0,0.12); border-color: rgba(120,80,0,0.3); color: #4A3E28; }
+  body.day .controls { background: #FBF8F0; border-top-color: rgba(120,80,0,0.25); }
+  body.day .next-preview { background: rgba(120,80,0,0.08); border-color: rgba(120,80,0,0.3); }
+  body.day .next-text { color: rgba(40,30,10,0.75); }
+  body.day .move-directive { border-top-color: #E8E0D0; }
+  body.day .acc-item { border-color: rgba(120,80,0,0.35); }
+  body.day .acc-header { background: rgba(120,80,0,0.08); }
+  body.day .test-card { background: rgba(120,80,0,0.06); border-color: rgba(120,80,0,0.3); }
+  body.day .btn-sm, body.day .icon-btn, body.day .btn-secondary { color: #4A3E28; border-color: rgba(120,80,0,0.35); }
+  body.day .btn-sm.on { color: #8A5A00; border-color: rgba(138,90,0,0.7); }
+  /* Arena diagram on the white card needs dark markings in daylight */
+  body.day .arena-svg .arena-field { stroke: rgba(120,80,0,0.4); }
+  body.day .arena-svg .arena-cl { stroke: rgba(120,80,0,0.18); }
+  body.day .arena-svg .am circle { fill: #FBF8F0; stroke: rgba(120,80,0,0.5); }
+  body.day .arena-svg .am text { fill: rgba(74,50,0,0.85); }
+  body.day .arena-svg .am.active circle { fill: #8A5A00; stroke: #6E4600; }
+  body.day .arena-svg .am.active text { fill: #FFFFFF; }
 
   /* ── Review screen ── */
   .review-screen {
@@ -210,7 +241,7 @@
   .review-content { display: flex; flex-direction: column; gap: 6px; }
   .review-parts { display: flex; flex-direction: column; gap: 0.4rem; }
   .review-part { display: flex; gap: 0.6rem; align-items: baseline; }
-  .review-part-marker { background: var(--arena-mid); color: #FBD971; font-family: 'DM Mono', monospace; font-size: 0.68rem; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; }
+  .review-part-marker { background: #2C2416; color: #FBD971; font-family: 'DM Mono', monospace; font-size: 0.68rem; padding: 2px 8px; border-radius: 20px; letter-spacing: 0.06em; white-space: nowrap; flex-shrink: 0; }
   .review-part-text { font-size: 0.95rem; font-weight: 600; color: var(--sand); line-height: 1.35; }
   .review-directive { font-size: 0.82rem; color: var(--text-light); font-style: italic; line-height: 1.4; }
   .review-footer { padding: 0.75rem 1.25rem 1.25rem; flex-shrink: 0; border-top: 0.5px solid rgba(200,151,42,0.15); }
@@ -315,6 +346,7 @@
   <button class="btn-secondary hidden" id="restart-btn"     onclick="restartTest()">Restart</button>
 
   <div class="footer-row">
+    <button class="btn-sm icon-btn" id="theme-btn" onclick="toggleTheme()" title="Daylight / night theme" aria-label="Theme"></button>
     <button class="btn-sm icon-btn" id="silent-btn" onclick="toggleSilent()" title="Sound" aria-label="Sound"></button>
     <button class="btn-sm icon-btn hidden" id="repeat-btn" onclick="replaySpeak()" title="Repeat" aria-label="Repeat"></button>
     <span class="footer-label">Voice</span>
@@ -410,9 +442,26 @@ const ICON_MIC_OFF  = SVG_OPEN + '<rect x="9" y="2" width="6" height="11" rx="3"
 const ICON_SOUND_ON = SVG_OPEN + '<polygon points="4 9 8 9 12 5 12 19 8 15 4 15"/><path d="M16 9.5a4 4 0 0 1 0 5"/><path d="M18.5 7a8 8 0 0 1 0 10"/></svg>';
 const ICON_SOUND_OFF= SVG_OPEN + '<polygon points="4 9 8 9 12 5 12 19 8 15 4 15"/><line x1="16" y1="9" x2="21" y2="14"/><line x1="21" y1="9" x2="16" y2="14"/></svg>';
 const ICON_REPEAT   = SVG_OPEN + '<polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>';
+const ICON_SUN      = SVG_OPEN + '<circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/><line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/><line x1="4.9" y1="4.9" x2="6.3" y2="6.3"/><line x1="17.7" y1="17.7" x2="19.1" y2="19.1"/><line x1="4.9" y1="19.1" x2="6.3" y2="17.7"/><line x1="17.7" y1="6.3" x2="19.1" y2="4.9"/></svg>';
+const ICON_MOON     = SVG_OPEN + '<path d="M21 12.8A9 9 0 1 1 11.2 3 7 7 0 0 0 21 12.8z"/></svg>';
+
+let dayMode = localStorage.getItem('dtr-theme') === 'day';
+
+function applyTheme() {
+  document.body.classList.toggle('day', dayMode);
+  // Show the icon for the mode you'd switch TO
+  document.getElementById('theme-btn').innerHTML = dayMode ? ICON_MOON : ICON_SUN;
+}
+
+function toggleTheme() {
+  dayMode = !dayMode;
+  localStorage.setItem('dtr-theme', dayMode ? 'day' : 'night');
+  applyTheme();
+}
 
 function initFooterIcons() {
   document.getElementById('repeat-btn').innerHTML = ICON_REPEAT;
+  applyTheme();
   updateSilentUI();
   updateMicUI(micActive);
 }
