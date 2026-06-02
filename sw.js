@@ -1,4 +1,4 @@
-const CACHE = 'dressage-reader-v6';
+const CACHE = 'dressage-reader-v7';
 const ASSETS = [
   '/',
   '/index.html',

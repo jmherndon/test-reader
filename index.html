@@ -349,7 +349,7 @@ let lastSpoken = '';
 let commandFired = false;
 let synthActive = false;
 let preferredVoice = null;
-let silentMode = false;
+let silentMode = true; // start muted; user taps the speaker icon to enable audio
 
 function toggleSilent() {
   silentMode = !silentMode;
